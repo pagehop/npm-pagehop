@@ -17,7 +17,7 @@ describe( "toolName tool",function(){
 			function() {
 				var currentResults = [],
 					hops = [],
-					argument = "xyz",
+					argument = "irrelevant",
 					selection = 0,
 					pagehop = window.pagehop;
 

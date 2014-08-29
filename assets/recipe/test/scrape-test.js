@@ -12,12 +12,6 @@ var testScraping = function( pageName, expectedResults, done ) {
 	test.scrape(
 		pathToRecipe,
 		"file://" + pathUtils.resolve( __dirname, "data", pageName ),
-		function() {
-			window._pagehopTest = {
-				isFirstJobsPage: true,
-				isFirstShowPage: true
-			};
-		},
 		function(results) {
 			should.exist( results );
 			results.should.eql( expectedResults );

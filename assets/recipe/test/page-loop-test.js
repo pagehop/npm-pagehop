@@ -5,7 +5,7 @@ var should = require("should"),
 
 var test = require("../../../").test;
 
-var pathToRecipe = pathUtils.resolve( pathUtils.join( __dirname, '../' ) );
+var pathToRecipe = pathUtils.resolve( __dirname, '../' );
 
 var generateResults = function(size) {
 	return Array.apply( null, new Array( size ) ).map( function() {
@@ -33,10 +33,10 @@ describe("recipe-name's pageLoop",function(){
 				pathToRecipe,
 				function() {
 					var query = "irrelevant",
-						options = null,
+						options = [],
 						max = 30,
 						scrapeScript = "irrelevant";
-					window.pagehop.init( query, options, max, scrapeScript );
+					pagehop.init( query, options, max, scrapeScript );
 				},
 				intermediateResults,
 				function(urls, result) {
@@ -59,10 +59,10 @@ describe("recipe-name's pageLoop",function(){
 				pathToRecipe,
 				function() {
 					var query = "irrelevant",
-						options = null,
+						options = [],
 						max = 100,
 						scrapeScript = "irrelevant";
-					window.pagehop.init( query, options, max, scrapeScript );
+					pagehop.init( query, options, max, scrapeScript );
 				},
 				intermediateResults,
 				function(urls, result) {
@@ -81,10 +81,10 @@ describe("recipe-name's pageLoop",function(){
 				pathToRecipe,
 				function() {
 					var query = "irrelevant",
-						options = null,
+						options = [],
 						max = 40,
 						scrapeScript = "irrelevant";
-					window.pagehop.init( query, options, max, scrapeScript );
+					pagehop.init( query, options, max, scrapeScript );
 				},
 				function(urls, result) {
 					should.exist( urls );
@@ -105,7 +105,7 @@ describe("recipe-name's pageLoop",function(){
 						options = [":optionName"],
 						max = 10,
 						scrapeScript = "irrelevant";
-					window.pagehop.init( query, options, max, scrapeScript );
+					pagehop.init( query, options, max, scrapeScript );
 				},
 				function(urls, result) {
 					should.exist( urls );
@@ -123,10 +123,9 @@ describe("recipe-name's pageLoop",function(){
 				pathToRecipe,
 				function() {
 					var query = "irrelevant",
-						options = null,
+						options = [],
 						max = 200,
-						scrapeScript = "irrelevant",
-						pagehop = window.pagehop;
+						scrapeScript = "irrelevant";
 					pagehop.scrape = function(url, callback) {
 						window.boxApi.emitEvent( "scrape", url );
 						callback( "blowup" );
