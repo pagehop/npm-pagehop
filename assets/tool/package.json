@@ -1,0 +1,47 @@
+{
+  "name": "pagehop-name-tool",
+  "description": "Tool for ...",
+  "version": "0.1.0",
+
+  "homepage": "https://github.com/githubUserName/pagehop-name-tool",
+  "author": {
+    "name": "githubUserName",
+    "email": "email@example.com",
+    "url": "about.me/name"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/githubUserName/pagehop-name-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/githubUserName/pagehop-name-tool/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/githubUserName/pagehop-name-tool/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-simple-mocha": "~0.4.0",
+    "mocha": "~1.13.0",
+    "should": "~3.1.2"
+  },
+  "private": true,
+
+  "pagehop": {
+    "id": "ToolName",
+    "keyword": ":keyword",
+    "hasArgument": false
+  }
+}

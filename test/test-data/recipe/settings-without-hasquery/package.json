@@ -1,0 +1,42 @@
+{
+  "name": "pagehop-google-recipe",
+  "description": "Normal description.",
+  "version": "0.1.0",
+
+  "homepage": "https://github.com/nicroto/pagehop-google-recipe",
+  "author": {
+    "name": "nicroto",
+    "email": "nikolay@tsenkov.net",
+    "url": "about.me/tsenkov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nicroto/pagehop-google-recipe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicroto/pagehop-google-recipe/issues"
+  },
+  "licenses": [],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "private": true,
+  "keywords": [],
+
+  "pagehop": {
+    "id": "GoogleSearch",
+    "options": [
+      {
+        "description": "A local search.",
+        "keyword": ":loc"
+      }
+    ]
+  }
+}

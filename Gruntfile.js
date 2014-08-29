@@ -1,0 +1,58 @@
+'use strict';
+
+module.exports = function(grunt) {
+
+	grunt.initConfig({
+
+		pkg: grunt.file.readJSON( 'package.json' ),
+
+		jshint: {
+			all: [
+				'src/**/*.js',
+				'test/**/*-test.js',
+				'assets/**/*.js',
+				'assets/**/*-test.js',
+				'Gruntfile.js'
+			],
+			options: {
+				jshintrc: '.jshintrc'
+			},
+			gruntfile: {
+				src: 'Gruntfile.js'
+			},
+			src: {
+				src: [ 'src/**/*.js' ]
+			},
+			test: {
+				src: [ 'test/**/*-test.js' ]
+			}
+		},
+
+		simplemocha: {
+			all: { src: [
+				'test/**/*-test.js',
+				'src/**/*-test.js',
+				'assets/**/*-test.js',
+				'assets/**/*-test.js'
+			] },
+			options: {
+				ui: 'bdd',
+				reporter: 'spec'
+			}
+		},
+
+		clean: {
+			testTempDirs: ["test/test-data/**/temp-*"],
+		}
+
+	});
+
+	// task loading
+	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-simple-mocha' );
+	grunt.loadNpmTasks('grunt-contrib-clean');
+
+	// ci task
+	grunt.registerTask( 'h', [ 'jshint:all' ] );
+	grunt.registerTask( 'default', [ 'simplemocha:all', 'jshint:all', 'clean:testTempDirs' ] );
+};

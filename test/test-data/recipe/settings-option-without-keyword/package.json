@@ -1,0 +1,42 @@
+{
+  "name": "pagehop-github-recipe",
+  "description": "Recipe for the pagehop productivity tool which allows search in Github.",
+  "version": "0.1.0",
+
+  "homepage": "https://github.com/nicroto/pagehop-github-recipe",
+  "author": {
+    "name": "nicroto",
+    "email": "nikolay@tsenkov.net",
+    "url": "about.me/tsenkov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nicroto/pagehop-github-recipe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicroto/pagehop-github-recipe/issues"
+  },
+  "licenses": [],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "private": true,
+  "keywords": [],
+
+  "pagehop": {
+    "id": "GithubSearch",
+    "options": [
+      {
+        "description": "Search for repositories"
+      }
+    ],
+    "hasQuery": true
+  }
+}

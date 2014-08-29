@@ -1,0 +1,38 @@
+{
+  "name": "pagehop-google-recipe",
+  "description": "Recipe for the pagehop productivity tool which allows search in Google.",
+  "version": "asd.2",
+
+  "homepage": "https://github.com/nicroto/pagehop-google-recipe",
+  "author": {
+    "name": "nicroto",
+    "email": "nikolay@tsenkov.net",
+    "url": "about.me/tsenkov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nicroto/pagehop-google-recipe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicroto/pagehop-google-recipe/issues"
+  },
+  "licenses": [],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "private": true,
+  "keywords": [],
+
+  "pagehop": {
+    "id": "GoogleSearch",
+    "options": [],
+    "hasQuery": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "pagehop",
+  "description": "CLI tool and a testing framework for building recipes and tools for the Pagehop app.",
+  "version": "1.0.0",
+  "author": {
+    "name": "nicroto",
+    "email": "nikolay@tsenkov.net",
+    "url": "about.me/tsenkov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pagehop/npm-pagehop.git"
+  },
+  "homepage": "https://github.com/pagehop/npm-pagehop",
+  "bugs": {
+    "url": "https://github.com/pagehop/npm-pagehop/issues"
+  },
+  "licenses": [],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+    "boxtree": "^1.0.0",
+    "browserify": "~3.24.13",
+    "coolors": "0.0.2",
+    "node-phantom": "~0.2.5",
+    "nomnom": "^1.8.0",
+    "semver": "~2.2.1",
+    "wrench": "~1.5.7"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-simple-mocha": "~0.4.0",
+    "mocha": "~1.13.0",
+    "should": "~3.1.2"
+  },
+  "main": "src/exports",
+  "bin": {
+    "pagehop": "./bin/cli.js"
+  },
+  "keywords": [
+    "pagehop",
+    "cli",
+    "API",
+    "recipe",
+    "tool",
+    "test",
+    "framework"
+  ]
+}

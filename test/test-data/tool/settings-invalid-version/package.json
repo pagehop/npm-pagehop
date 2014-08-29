@@ -1,0 +1,38 @@
+{
+  "name": "pagehop-fuzzy-tool",
+  "description": "Tool allowing fuzzy search on results.",
+  "version": "ascv.1.asd",
+
+  "homepage": "https://github.com/nicroto/pagehop-fuzzy-tool",
+  "author": {
+    "name": "nicroto",
+    "email": "nikolay@tsenkov.net",
+    "url": "about.me/tsenkov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nicroto/pagehop-fuzzy-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicroto/pagehop-fuzzy-tool/issues"
+  },
+  "licenses": [],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "private": true,
+  "keywords": [],
+
+  "pagehop": {
+    "id": "FuzzySearch",
+    "keyword": ":f",
+    "hasArgument": true
+  }
+}
