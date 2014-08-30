@@ -3,7 +3,7 @@
 var should = require("should"),
 	pathUtils = require("path");
 
-var test = require("../../../").test;
+var test = require("pagehop").test;
 
 var pathToTool = pathUtils.resolve( __dirname, '../' );
 

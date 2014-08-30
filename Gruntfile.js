@@ -10,8 +10,6 @@ module.exports = function(grunt) {
 			all: [
 				'src/**/*.js',
 				'test/**/*-test.js',
-				'assets/**/*.js',
-				'assets/**/*-test.js',
 				'Gruntfile.js'
 			],
 			options: {
@@ -31,9 +29,7 @@ module.exports = function(grunt) {
 		simplemocha: {
 			all: { src: [
 				'test/**/*-test.js',
-				'src/**/*-test.js',
-				'assets/**/*-test.js',
-				'assets/**/*-test.js'
+				'src/**/*-test.js'
 			] },
 			options: {
 				ui: 'bdd',
