@@ -11,6 +11,9 @@ var pathUtils = require('path'),
 	coolors = require("coolors"),
 	noOptionsErrorMessage = coolors( "No option specified. ", "bold" ) + "Run with ' --help' to check how to use this command";
 
+optionParser
+	.script( "pagehop" );
+
 optionParser.command( "recipe" )
 	.option( "init", {
 		flag: true,
