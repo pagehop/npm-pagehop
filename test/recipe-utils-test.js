@@ -4,7 +4,8 @@
 'use strict';
 
 var should = require("should"),
-	pathUtils = require("path"),
+	pathUtils = require('path'),
+	fs = require('fs'),
 	wrench = require("wrench");
 
 var recipeUtils = require("../src/recipe-utils"),
@@ -57,9 +58,19 @@ describe( "recipeUtils", function() {
 			} ).throw();
 		} );
 		it( "throws an error if settingsPath exists (dir)", function() {
+			// programmatically create, because npm install has a problem
+			// with dirs called package.json
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-recipe"),
+				dirPath = pathUtils.resolve( tempDirPath, "package.json" );
+
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-settings-exist-dir") );
+				recipeUtils.scaffoldRecipe( tempDirPath );
 			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "throws an error if testDirPath exists (file)", function() {
 			should( function() {
@@ -158,9 +169,25 @@ describe( "recipeUtils", function() {
 			} ).should.throw();
 		} );
 		it( "throws an error if settings path is dir", function() {
-			( function() {
-				recipeUtils.loadRecipe( pathUtils.resolve( rootPath, "recipe/with-settings-dir") );
-			} ).should.throw();
+			// programmatically create, because npm install has a problem
+			// with dirs called package.json
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-recipe"),
+				sourceDirPath = pathUtils.resolve( rootPath, "recipe", "correct" ),
+				dirPath = pathUtils.resolve( tempDirPath, "package.json" );
+
+			wrench.mkdirSyncRecursive( tempDirPath, "0777" );
+			wrench.copyDirSyncRecursive( sourceDirPath, tempDirPath, { forceDelete: true } );
+			// remove file package.json
+			fs.unlinkSync( dirPath );
+			// create dir package.json
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
+			should( function() {
+				recipeUtils.loadRecipe( tempDirPath );
+			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "throws an error if pageLoop path is dir", function() {
 			( function() {
@@ -291,9 +318,25 @@ describe( "recipeUtils", function() {
 			} ).should.throw();
 		} );
 		it( "throws an error if settings path is dir", function() {
-			( function() {
-				recipeUtils.loadCompiledRecipe( pathUtils.resolve( rootPath, "recipe/with-settings-dir") );
-			} ).should.throw();
+			// programmatically create, because npm install has a problem
+			// with dirs called package.json
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-recipe"),
+				sourceDirPath = pathUtils.resolve( rootPath, "recipe", "correct" ),
+				dirPath = pathUtils.resolve( tempDirPath, "package.json" );
+
+			wrench.mkdirSyncRecursive( tempDirPath, "0777" );
+			wrench.copyDirSyncRecursive( sourceDirPath, tempDirPath, { forceDelete: true } );
+			// remove file package.json
+			fs.unlinkSync( dirPath );
+			// create dir package.json
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
+			should( function() {
+				recipeUtils.loadCompiledRecipe( tempDirPath );
+			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "throws an error if pageLoop path is dir", function() {
 			( function() {

@@ -4,7 +4,8 @@
 'use strict';
 
 var should = require("should"),
-	pathUtils = require("path"),
+	pathUtils = require('path'),
+	fs = require('fs'),
 	wrench = require("wrench");
 
 var toolUtils = require("../src/tool-utils"),
@@ -44,9 +45,19 @@ describe( 'toolUtils', function(){
 			} ).throw();
 		} );
 		it( "throws an error if settingsPath exists (dir)", function() {
+			// programmatically create, because npm install has a problem
+			// with dirs called package.json
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-tool"),
+				dirPath = pathUtils.resolve( tempDirPath, "package.json" );
+
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-settings-exist-dir") );
+				toolUtils.scaffoldTool( tempDirPath );
 			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "throws an error if testDirPath exists (file)", function() {
 			should( function() {
@@ -140,9 +151,25 @@ describe( 'toolUtils', function(){
 			} ).should.throw();
 		} );
 		it( "throws an error if settings path is dir", function(){
-			( function() {
-				toolUtils.loadTool( pathUtils.resolve( rootPath, "tool/with-settings-dir") );
-			} ).should.throw();
+			// programmatically create, because npm install has a problem
+			// with dirs called package.json
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-tool"),
+				sourceDirPath = pathUtils.resolve( rootPath, "tool", "correct" ),
+				dirPath = pathUtils.resolve( tempDirPath, "package.json" );
+
+			wrench.mkdirSyncRecursive( tempDirPath, "0777" );
+			wrench.copyDirSyncRecursive( sourceDirPath, tempDirPath, { forceDelete: true } );
+			// remove file package.json
+			fs.unlinkSync( dirPath );
+			// create dir package.json
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
+			should( function() {
+				toolUtils.loadTool( tempDirPath );
+			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "throws an error if tool path is dir", function(){
 			( function() {
@@ -241,9 +268,25 @@ describe( 'toolUtils', function(){
 			} ).should.throw();
 		} );
 		it( "throws an error if settings path is dir", function(){
-			( function() {
-				toolUtils.loadCompiledTool( pathUtils.resolve( rootPath, "tool/with-settings-dir") );
-			} ).should.throw();
+			// programmatically create, because npm install has a problem
+			// with dirs called package.json
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-tool"),
+				sourceDirPath = pathUtils.resolve( rootPath, "tool", "correct" ),
+				dirPath = pathUtils.resolve( tempDirPath, "package.json" );
+
+			wrench.mkdirSyncRecursive( tempDirPath, "0777" );
+			wrench.copyDirSyncRecursive( sourceDirPath, tempDirPath, { forceDelete: true } );
+			// remove file package.json
+			fs.unlinkSync( dirPath );
+			// create dir package.json
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
+			should( function() {
+				toolUtils.loadCompiledTool( tempDirPath );
+			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "throws an error if tool path is dir", function(){
 			( function() {
