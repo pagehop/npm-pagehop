@@ -1,7 +1,7 @@
 'use strict';
 
-var fs = require("fs"),
-	pathUtils = require("path");
+var fs = require('fs'),
+	pathUtils = require('path');
 
 exports.pageLoopApi = fs.readFileSync( pathUtils.resolve( __dirname, "api", "page-loop.js" ), "utf-8" );
 exports.scrapeApi = fs.readFileSync( pathUtils.resolve( __dirname, "api", "scrape.js" ), "utf-8" );

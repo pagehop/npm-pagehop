@@ -3,8 +3,8 @@
 
 'use strict';
 
-var pathUtils = require("path"),
-	fs = require("fs"),
+var pathUtils = require('path'),
+	fs = require('fs'),
 	Boxtree = require("boxtree").Boxtree,
 	recipeUtils = require("./recipe-utils"),
 	toolUtils = require("./tool-utils"),

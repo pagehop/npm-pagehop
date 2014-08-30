@@ -1,7 +1,5 @@
 'use strict';
 
-var OS = "X";
-
 var CONST = {
 
 	TOOL_LEXEME_REGEX:				/^:([A-Z]|[a-z])+([0-9])*$/g,
@@ -22,22 +20,5 @@ var CONST = {
 	GITIGNORE_FILE_NAME:			".gitignore"
 
 };
-
-
-// resolve os-specific consts
-
-for ( var propName in CONST ) {
-	if ( propName.search( "OS_" ) === 0 ) {
-		var prefix = "OS_" + OS + "_";
-		if ( propName.search( prefix ) === 0 ) {
-			var value = CONST[propName];
-			delete CONST[propName];
-			propName = propName.replace( prefix, "" );
-			CONST[propName] = value;
-		} else {
-			delete CONST[propName];
-		}
-	}
-}
 
 module.exports = CONST;

@@ -1,10 +1,10 @@
 'use strict';
 
-var pathUtils = require("path"),
-	fs = require("fs"),
-	wrench = require("wrench"),
+var pathUtils = require('path'),
+	fs = require('fs'),
 	semver = require("semver"),
-	browserify = require("browserify");
+	browserify = require("browserify"),
+	commonUtils = require("./common-utils");
 
 var CONST = require("./const");
 
@@ -35,7 +35,7 @@ var toolUtils = {
 
 		var templateToolPath = pathUtils.resolve( __dirname, "..", "assets", "tool" );
 
-		wrench.copyDirSyncRecursive( templateToolPath , path, { forceDelete: true } );
+		commonUtils.copyDirContentSync( templateToolPath, path );
 	},
 
 	loadTool: function(path) {

@@ -1,10 +1,10 @@
 'use strict';
 
-var pathUtils = require("path"),
-	fs = require("fs"),
+var pathUtils = require('path'),
+	fs = require('fs'),
 	semver = require("semver"),
 	browserify = require("browserify"),
-	wrench = require("wrench");
+	commonUtils = require("./common-utils");
 
 var CONST = require("./const");
 
@@ -37,7 +37,7 @@ var recipeUtils = {
 
 		var templateRecipePath = pathUtils.resolve( __dirname, "..", "assets", "recipe" );
 
-		wrench.copyDirSyncRecursive( templateRecipePath , path, { forceDelete: true } );
+		commonUtils.copyDirContentSync( templateRecipePath, path );
 	},
 
 	loadRecipe: function(path) {
