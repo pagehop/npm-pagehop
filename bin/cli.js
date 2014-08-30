@@ -66,7 +66,7 @@ function execInTryCatch( lambda, errorType, successMessage ) {
 }
 
 function execCommand(opts, scaffoldLambda, validateLambda) {
-	var path = pathUtils.resolve( ( opts.path ) ? opts.path : "." );
+	var path = pathUtils.resolve( process.cwd(), ( opts.path ) ? opts.path : "." );
 
 	if ( opts.init ) {
 		execInTryCatch( function() { scaffoldLambda( path ); }, "Init Error", "Successfull init!" );
