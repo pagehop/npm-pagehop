@@ -7,6 +7,10 @@ var fs = require('fs'),
 var common = {
 
 	copyDirContentSync: function( sourceDirPath, destDirPath ) {
+		if ( !fs.existsSync( destDirPath ) ) {
+			wrench.mkdirSyncRecursive(destDirPath, "0777");
+		}
+
 		var paths = wrench.readdirSyncRecursive( sourceDirPath );
 
 		for ( var i = 0; i < paths.length; i++ ) {
