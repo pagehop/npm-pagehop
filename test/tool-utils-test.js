@@ -30,7 +30,7 @@ describe( 'toolUtils', function(){
 	describe( "scaffoldTool(path)", function() {
 		it( "throws an error if toolFilePath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-toolfile-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-toolfile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if toolFilePath exists (dir)", function() {
@@ -40,7 +40,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if settingsPath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-settings-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-settings-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if settingsPath exists (dir)", function() {
@@ -50,7 +50,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if testDirPath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-testdir-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-testdir-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if testDirPath exists (dir)", function() {
@@ -60,7 +60,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if licenseFilePath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-licensefile-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-licensefile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if licenseFilePath exists (dir)", function() {
@@ -70,7 +70,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if readmeFilePath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-readmefile-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-readmefile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if readmeFilePath exists (dir)", function() {
@@ -80,7 +80,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if gruntFilePath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-gruntfile-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-gruntfile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if gruntFilePath exists (dir)", function() {
@@ -90,7 +90,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if jshintFilePath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-jshintfile-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-jshintfile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if jshintFilePath exists (dir)", function() {
@@ -100,7 +100,7 @@ describe( 'toolUtils', function(){
 		} );
 		it( "throws an error if gitignoreFilePath exists (file)", function() {
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-gitignorefile-exist-dir") );
+				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-gitignorefile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if gitignoreFilePath exists (dir)", function() {

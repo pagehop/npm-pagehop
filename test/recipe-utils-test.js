@@ -33,7 +33,7 @@ describe( "recipeUtils", function() {
 	describe( "scaffoldRecipe(path)", function() {
 		it( "throws an error if pageLoopPath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-pageloop-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-pageloop-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if pageLoopPath exists (dir)", function() {
@@ -43,7 +43,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if scrapePath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-scrape-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-scrape-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if scrapePath exists (dir)", function() {
@@ -53,7 +53,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if settingsPath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-settings-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-settings-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if settingsPath exists (dir)", function() {
@@ -63,7 +63,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if testDirPath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-testdir-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-testdir-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if testDirPath exists (dir)", function() {
@@ -73,7 +73,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if licenseFilePath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-licensefile-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-licensefile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if licenseFilePath exists (dir)", function() {
@@ -83,7 +83,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if readmeFilePath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-readmefile-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-readmefile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if readmeFilePath exists (dir)", function() {
@@ -93,7 +93,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if gruntFilePath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-gruntfile-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-gruntfile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if gruntFilePath exists (dir)", function() {
@@ -103,7 +103,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if jshintFilePath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-jshintfile-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-jshintfile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if jshintFilePath exists (dir)", function() {
@@ -113,7 +113,7 @@ describe( "recipeUtils", function() {
 		} );
 		it( "throws an error if gitignoreFilePath exists (file)", function() {
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-gitignorefile-exist-dir") );
+				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-gitignorefile-exist-file") );
 			} ).throw();
 		} );
 		it( "throws an error if gitignoreFilePath exists (dir)", function() {
