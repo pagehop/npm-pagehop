@@ -175,6 +175,7 @@ it( "scrape 1 page, if maxCount=30", function(done){
 ```
 
 This is what happens here:
+
 1. The preLoopFunc inits pagehop's global object:
 	- **query** ("irrelevant", simply is a word game since here in the test case, it's not of any significance);
 	- **no options** (recipe options);
@@ -408,6 +409,331 @@ it( "should set items to empty array if no results", function(done){
 	);
 } );
 ```
+
+## pagehop API reference
+
+### Recipes
+
+Every recipe consist of:
+- page-loop.js;
+- scrape.js;
+- package.json.
+
+The two scripts are runned in a completely isolated environment (no access to the FS or anything system).
+
+Before running the scripts, Pagehop adds the pagehop global object (this is how your recipe communicate results and errors with the Pagehop app and how it gets the info about the current pagehop query), which is similar for both of the scripts, yet a bit different.
+
+#### pagehop API (page-loop.js)
+
+All data obtained from getter methods is immutable.
+
+##### pagehop.init(query, options, max, scrapeScript, systemMeta)
+
+This method is used by Pagehop, to preset the environment for running your page-loop.js
+
+You can use this method only in your tests, where the test framework doesn't call init automatically.
+
+Lets go through the params:
+- **query** - **string**, recipe's query as parsed by Pagehop.
+- **options** - **array**, holding all options parsed from the pagehop query.
+- **max** - integer, >=10, the maximal number of results that can be returned by the recipe.
+- **scrapeScript** - **string**, Pagehop executes recipes producing a single script which is the page-loop.js with all of it's dependencies and the scrape script (if any), which is executed in a separate isolated environment upon calling pagehop.scrape() from your page-loop. Since you only should use pagehop.init() in tests, and since these tests should only test the page-loop.js, **never** the scrape.js (it's separately tested), you don't need to pass actual script in here, because it shouldn't get executed.
+- **systemMeta** - **object** with 2 fields (arrays) - **recipes**, **tools**. This is usually used by recipes that provide some system information about Pagehop (AllRecipes list the available recipes and AllTools list the tools).
+
+##### pagehop.getMaxCount()
+
+Returns an **integer**. Your pageLoop scripts should get this, in order to find out the limit of the number of returned results they should confirm to.
+
+##### pagehop.getQuery()
+
+Returns a **string**. Returns the recipe query as parsed by Pagehop.
+
+This doesn't include the whole pagehop query - e.g. in `g <this is the query> :r $.*^` the parsed query will be `<this is the query>`.
+
+##### pagehop.getOptions()
+
+Returns an **array** of strings.
+
+Tools or non-recognized options will not be passed in here - e.g. `h :s :asdf` will produce only [":s"] for options (":s" is for Show HN posts with HackerNews recipe).
+
+##### pagehop.getSystemMeta()
+
+Returns an **object** with 2 fields (arrays) - **recipes**, **tools**. Recipe objects look like this (comments show where does the data come from):
+
+```javascript
+{
+	id: /* package.json:pagehop.id */,
+	description: /* package.json:description */,
+	version: /* package.json:version */,
+	homepage: /* package.json:homepage */,
+	options: /* package.json:pagehop.options */
+} 
+```
+
+Tool objects look like this:
+
+```javascript
+{
+	id: /* package.json:pagehop.id */,
+	description: /* package.json:description */,
+	version: /* package.json:version */,
+	homepage: /* package.json:homepage */,
+	keyword: /* package.json:pagehop.keyword */
+} 
+```
+
+##### pagehop.scrape( url, callback )
+
+- **url** - **string** pointing to a file or a page on the web. Pagehop automatically will use the scrape.js script in a separate, also isolated, environment (browser), where it will first navigate to the page and then run scrape.js.
+- **callback** - function accepting 2 arguments - **error** and **result**. If the scrape produced an error (syntax error in scrape.js, or runtime error, or timeout), you will get an error in the callback and no result. Error is of this structure:
+
+```javascript
+{
+	type: /* string */,
+	message: /* string */
+}
+```
+
+The result object is always entirely up to your scrape script.
+
+##### (experimental) pagehop.updateResults( results )
+
+- **results** - **array** of objects with this structure:
+
+```javascript
+{
+	text: /* required, string */,
+	address: /* string, url */,
+	displayText: /* string that can contain html formatting */,
+	displayAddress: /* string that can contain html formatting */,
+	tooltip: /* string */
+}
+```
+
+This is not yet used by official builds of Pagehop, but we are trying to see if we can show intermediate results before the recipe is finished. So far the tests don't show too promising results, so we advice you not to use the method. Most likely we will try to replace this with something like % progress API, where you will tell Pagehop, what % of the scrapes/loads/generations of results are ready, so we can visualize it and notify the user.
+
+If you decide to use it, anyway, you should call it in cases where you have called scrape in a synchronous loop. This way every time one of the scrapes is ready, it will notify Pagehop of the new results. **Always return ALL of the results so far, not just these that you get on this callback from scrape**
+
+##### pagehop.finishWithError( error )
+
+If your recipe is prevented by an obstacle that it cannot overcome you can fail gracefully with pagehop.finishWithError().
+
+Error object must be with this structure:
+
+```javascript
+{
+	type: /* string */,
+	message: /* string */
+}
+```
+
+##### pagehop.finish( results )
+
+- **results** - **array** of result objects.
+
+When your recipe is ready, you can return the results it has obtained/produced with pagehop.finish( results ).
+
+Here is how your result objects should look like:
+
+```javascript
+{
+	text: /* required, string */,
+	address: /* string, url */,
+	displayText: /* string that can contain html formatting */,
+	displayAddress: /* string that can contain html formatting */,
+	tooltip: /* string */
+}
+```
+
+If you provide, both, text and displayText, displayText will be shown as the first row of your Pagehop result, but text will still be the field used for searches (:r will not use the displayText to match against and the produced results will have their displayText fields redone with the formatting highlighting the matched parts). If only text is present, then it will be displayed on the first row.
+
+If you provide, both, address and displayAddress, only displayAddress will be shown, on the second row.
+
+By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
+
+#### pagehop API (scrape.js)
+
+All data obtained from getter methods is immutable.
+
+##### pagehop.init(query, options, max)
+
+This method is used by Pagehop, to preset the environment for running your scrape.js
+
+You can use this method only in your tests, where the test framework doesn't call init automatically.
+
+Lets go through the params:
+- **query** - **string**, recipe's query as parsed by Pagehop.
+- **options** - **array**, holding all options parsed from the pagehop query.
+- **max** - integer, >=10, the maximal number of results that can be returned by the recipe.
+
+##### pagehop.getMaxCount()
+
+Returns an **integer**. Although page-loop.js has access to this prop, for convenience we provide availability in scrape.js, too. For example, when you always scrape 1 page (virtual scrolling etc.).
+
+##### pagehop.getQuery()
+
+Returns a **string**. Returns the recipe query as parsed by Pagehop.
+
+This doesn't include the whole pagehop query - e.g. in `g <this is the query> :r $.*^` the parsed query will be `<this is the query>`.
+
+##### pagehop.getOptions()
+
+Returns an **array** of strings.
+
+Tools or non-recognized options will not be passed in here - e.g. `h :s :asdf` will produce only [":s"] for options (":s" is for Show HN posts with HackerNews recipe).
+
+##### pagehop.finish( results )
+
+- **results** - **array** of result objects.
+
+When your scrape is ready, you can return the results it has obtained with pagehop.finish( results ).
+
+Result's format is entirely under your control (pagehop.finish( results ) in the page-loop.js should follow a scheme, though. Make sure to check that out).
+
+### Tools
+
+Every tool consist of:
+- tool.js;
+- package.json.
+
+The tool.js script is runned in a completely isolated environment (no access to the FS or anything system).
+
+Before running the script, Pagehop adds the pagehop global object (this is how your tool communicate results and errors with the Pagehop app and how it gets the info about the current pagehop query).
+
+#### pagehop API (tool.js)
+
+Not all data obtained from getter methods is immutable (check pagehop.getHops()).
+
+##### pagehop.init(currentResults, hops, argument, selection)
+
+This method is used by Pagehop, to preset the environment for running your tool.js
+
+You can use this method only in your tests, where the test framework doesn't call init automatically.
+
+Lets go through the params:
+- **currentResults** - **array** of result objects. This array is either produced by a recipe, or by the previous tool on the pipeline.
+- **hops** - **MUTABLE array** of objects specifying addresses the user had "hopped of". Here is how the Links tool uses the hops array:
+
+```javascript
+pagehop.getHops().push( {
+	text: selected.text,
+	address: selected.address
+} );
+```
+
+- **argument** - **string**, the tool's passed argument as parsed from the pagehop query.
+
+Example - in this query `g lets search google :r $[^test] :a :l`, the :r Regex tool will get "$[^test]" as an argument.
+
+- **selection** - **integer**, specifies the index of the selected item in the currentResults.
+
+##### pagehop.getCurrentResults()
+
+Returns an **array** with the results as returned by the selected recipe or by the previous tool in the pipeline.
+
+The result objects follow this structure:
+
+```javascript
+{
+	text: /* required, string */,
+	address: /* string, url */,
+	displayText: /* string that can contain html formatting */,
+	displayAddress: /* string that can contain html formatting */,
+	tooltip: /* string */
+}
+```
+
+##### pagehop.getHops()
+
+Returns a **MUTABLE array** of objects specifying addresses the user had "hopped of". Here is how the Links tool uses the hops array and how the objects in it look like:
+
+```javascript
+pagehop.getHops().push( {
+	text: selected.text,
+	address: selected.address
+} );
+```
+
+##### pagehop.getArgument()
+
+Returns a **string** - the tool's passed argument as parsed from the pagehop query.
+
+Example - in this query `g lets search google :r $[^test] :a :l`, the :r Regex tool will get "$[^test]" as an argument.
+
+##### pagehop.getSelection()
+
+Returns an **integer**, specifies the index of the selected item in the currentResults.
+
+##### pagehop.setSelection( value )
+
+- **value** - **integer** setting new selection index for the selected in the results that will be returned by the tool.
+
+##### (experimental) pagehop.task( script, callback, url )
+
+- **script** - **string** of a self-calling function (clojure) to be executed in a separate environment/page/thread.
+- **callback** - **function** receiving 2 parameters - **error** and **result**.
+- **url** - **optional param**, **string**, url to be loaded in the new page, before executing the passed script.
+
+This method is still experimental and we don't recommend you to use it.
+
+The use-case we have in mind is when you need to execute tasks in parallel for faster processing, or when the tool requires data from the web.
+
+```javascript
+...
+var task = function() {
+	...
+	window.boxApi.finishTask( result );
+};
+pagehop.task( "(" + task + ")();", function(error, result) {
+	if ( error ) {
+		...
+	}
+	if ( result ) {
+		...
+	}
+}, "http://example.com/some/page/for/tool/reference/" );
+```
+
+With this method you can scrape a page in a tool, or execute parallel processing algorithm on the results.
+
+##### pagehop.finishWithError( error )
+
+If your tool is prevented by an obstacle that it cannot overcome you can fail gracefully with pagehop.finishWithError().
+
+Error object must be with this structure:
+
+```javascript
+{
+	type: /* string */,
+	message: /* string */
+}
+```
+
+##### pagehop.finish( results )
+
+- **results** - **array** of result objects.
+
+When your tool is ready, you can return the results it has produced with pagehop.finish( results ).
+
+Here is how your result objects should look like:
+
+```javascript
+{
+	text: /* required, string */,
+	address: /* string, url */,
+	displayText: /* string that can contain html formatting */,
+	displayAddress: /* string that can contain html formatting */,
+	tooltip: /* string */
+}
+```
+
+The rules for result structure and visualization in the UI remain the same on the pipeline of recipe and tools:
+
+If you provide, both, text and displayText, displayText will be shown as the first row of your Pagehop result, but text will still be the field used for searches (:r will not use the displayText to match against and the produced results will have their displayText fields redone with the formatting highlighting the matched parts). If only text is present, then it will be displayed on the first row.
+
+If you provide, both, address and displayAddress, only displayAddress will be shown, on the second row.
+
+By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
 
 ## Copyright
 
