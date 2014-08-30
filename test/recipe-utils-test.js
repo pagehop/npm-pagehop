@@ -128,9 +128,19 @@ describe( "recipeUtils", function() {
 			} ).throw();
 		} );
 		it( "throws an error if gitignoreFilePath exists (dir)", function() {
+			// programmatically create, because npm install has a problem
+			// with dirs called .gitignore
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-recipe"),
+				dirPath = pathUtils.resolve( tempDirPath, ".gitignore" );
+
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
 			should( function() {
-				recipeUtils.scaffoldRecipe( pathUtils.resolve( rootPath, "recipe/scaffold-gitignorefile-exist-dir") );
+				recipeUtils.scaffoldRecipe( tempDirPath );
 			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "successfully scaffolds recipe", function() {
 			var tempDirPath = pathUtils.resolve( rootPath, "temp-recipe");

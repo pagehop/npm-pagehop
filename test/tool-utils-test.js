@@ -115,9 +115,19 @@ describe( 'toolUtils', function(){
 			} ).throw();
 		} );
 		it( "throws an error if gitignoreFilePath exists (dir)", function() {
+			// programmatically create, because npm install has a problem
+			// with dirs called .gitignore
+			var tempDirPath = pathUtils.resolve( rootPath, "temp-tool"),
+				dirPath = pathUtils.resolve( tempDirPath, ".gitignore" );
+
+			wrench.mkdirSyncRecursive( dirPath, "0777" );
+
 			should( function() {
-				toolUtils.scaffoldTool( pathUtils.resolve( rootPath, "tool/scaffold-gitignorefile-exist-dir") );
+				toolUtils.scaffoldTool( tempDirPath );
 			} ).throw();
+
+			var failSilent = false;
+			wrench.rmdirSyncRecursive( tempDirPath, failSilent );
 		} );
 		it( "successfully scaffolds tool", function() {
 			var tempDirPath = pathUtils.resolve( rootPath, "temp-tool");
