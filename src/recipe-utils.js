@@ -160,21 +160,23 @@ var recipeUtils = {
 			throw new Error( errorMessageTemplate + "options should be array!" );
 		}
 
-		for ( var i = 0; i < options.length; i++ ) {
-			var option = options[i];
-			if ( !self.isValidMandatoryString( option.description ) ) {
-				throw new Error( errorMessageTemplate +
-					"options[%i].description is either missing or not a string!".replace( "%i", (i + 1) ) );
-			}
-			if ( !self.isValidMandatoryString( option.keyword ) ) {
-				throw new Error( errorMessageTemplate +
-					"options[%i].keyword is either missing or not a string!".replace( "%i", (i + 1) ) );
-			}
-			if ( !option.keyword.match( CONST.TOOL_LEXEME_REGEX ) ) {
-				throw new Error( errorMessageTemplate +
-					"options[%i].keyword is not in the allowed format - should follow this regex %r!"
-						.replace( "%i", (i + 1) )
-						.replace( "%r", CONST.TOOL_LEXEME_REGEX ) );
+		if ( options ) {
+			for ( var i = 0; i < options.length; i++ ) {
+				var option = options[i];
+				if ( !self.isValidMandatoryString( option.description ) ) {
+					throw new Error( errorMessageTemplate +
+						"options[%i].description is either missing or not a string!".replace( "%i", (i + 1) ) );
+				}
+				if ( !self.isValidMandatoryString( option.keyword ) ) {
+					throw new Error( errorMessageTemplate +
+						"options[%i].keyword is either missing or not a string!".replace( "%i", (i + 1) ) );
+				}
+				if ( !option.keyword.match( CONST.TOOL_LEXEME_REGEX ) ) {
+					throw new Error( errorMessageTemplate +
+						"options[%i].keyword is not in the allowed format - should follow this regex %r!"
+							.replace( "%i", (i + 1) )
+							.replace( "%r", CONST.TOOL_LEXEME_REGEX ) );
+				}
 			}
 		}
 	},
