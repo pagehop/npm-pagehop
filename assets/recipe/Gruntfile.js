@@ -8,28 +8,18 @@ module.exports = function(grunt) {
 
 		jshint: {
 			all: [
-				'src/**/*.js',
+				'*.js',
 				'test/**/*-test.js',
 				'Gruntfile.js'
 			],
 			options: {
 				jshintrc: '.jshintrc'
-			},
-			gruntfile: {
-				src: 'Gruntfile.js'
-			},
-			src: {
-				src: [ 'src/**/*.js' ]
-			},
-			test: {
-				src: [ 'test/**/*-test.js' ]
 			}
 		},
 
 		simplemocha: {
 			all: { src: [
-				'test/**/*-test.js',
-				'src/**/*-test.js'
+				'test/**/*-test.js'
 			] },
 			options: {
 				ui: 'bdd',
