@@ -735,6 +735,11 @@ If you provide, both, address and displayAddress, only displayAddress will be sh
 
 By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
 
+## Release History
+
+ - 1.0.3
+   - Update: boxtree.
+
 ## Copyright
 
 Copyright (c) 2014 Universless Ltd., info@universless.com
