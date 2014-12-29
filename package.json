@@ -23,7 +23,7 @@
     "test": "grunt"
   },
   "dependencies": {
-    "boxtree": "^1.0.2",
+    "boxtree": "^1.0.3",
     "browserify": "~3.24.13",
     "coolors": "0.0.2",
     "node-phantom": "~0.2.5",

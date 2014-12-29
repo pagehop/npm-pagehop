@@ -737,6 +737,10 @@ By default, address is show in a tooltip on long-hover on items in the UI. You c
 
 ## Release History
 
+ - 1.0.5
+   - Update: boxtree.
+ - 1.0.4
+   - Update: boxtree.
  - 1.0.3
    - Update: boxtree.
 

@@ -1,9 +1,9 @@
 {
   "name": "pagehop",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "dependencies": {
     "boxtree": {
-      "version": "1.0.2",
+      "version": "1.0.3",
       "from": "boxtree@"
     },
     "browserify": {
