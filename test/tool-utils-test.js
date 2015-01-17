@@ -417,7 +417,7 @@ describe( 'toolUtils', function(){
 				scrapePath: null
 			};
 			toolUtils.updatePaths( tool, "test" );
-			tool.toolPath.should.equal( "test/tool-compiled.js" );
+			tool.toolPath.should.equal( pathUtils.normalize( "test/tool-compiled.js" ) );
 		} );
 	} );
 } );

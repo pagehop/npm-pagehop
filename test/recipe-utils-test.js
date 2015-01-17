@@ -507,8 +507,8 @@ describe( "recipeUtils", function() {
 				scrapePath: null
 			};
 			recipeUtils.updatePaths( recipe, "test" );
-			recipe.pageLoopPath.should.equal( "test/page-loop-compiled.js" );
-			recipe.scrapePath.should.equal( "test/scrape-compiled.js" );
+			recipe.pageLoopPath.should.equal( pathUtils.normalize( "test/page-loop-compiled.js" ) );
+			recipe.scrapePath.should.equal( pathUtils.normalize( "test/scrape-compiled.js" ) );
 		} );
 	} );
 } );

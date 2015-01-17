@@ -40,7 +40,7 @@ $ pagehop recipe
 ! No option specified. Run with ' --help' to check how to use this command
 ```
 
-```bash
+```
 $ pagehop recipe --help
 
 Usage: node cli.js recipe [options]
@@ -737,6 +737,9 @@ By default, address is show in a tooltip on long-hover on items in the UI. You c
 
 ## Release History
 
+ - 1.0.6
+   - Update: boxtree;
+   - Fix: tests are failing on Windows.
  - 1.0.5
    - Update: boxtree.
  - 1.0.4
