@@ -164,6 +164,7 @@ var toolUtils = {
 
 		var b = browserify();
 		b.add( tool.toolPath );
+		b.transform( "brfs" );
 		var readable = b.bundle();
 		var data = "";
 		readable.on('data', function(chunk) {

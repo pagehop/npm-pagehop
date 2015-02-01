@@ -461,24 +461,11 @@ describe( "recipeUtils", function() {
 		} );
 	} );
 	describe( "compileRecipe(recipe)", function() {
-		var compiled = false,
-			rootPath = pathUtils.resolve( pathUtils.join( __dirname, "test-data/recipe/correct" ) ),
+		var rootPath = pathUtils.resolve( pathUtils.join( __dirname, "test-data/recipe/correct" ) ),
 			recipe = recipeUtils.loadRecipe( rootPath );
 
-		recipeUtils.compileRecipe( recipe, function() {
-			compiled = true;
-		} );
-		var checkCompiled = function(done) {
-			if ( compiled ) {
-				done();
-			} else {
-				setTimeout( function() {
-					checkCompiled( done );
-				}, 0 );
-			}
-		};
 		before( function(done) {
-			checkCompiled( done );
+			recipeUtils.compileRecipe( recipe, done );
 		} );
 
 		it( "successfully compiles recipe's code files", function() {
@@ -498,6 +485,10 @@ describe( "recipeUtils", function() {
 			recipe.files[0].name.should.equal( CONST.SETTINGS_FILENAME );
 			recipe.files[1].name.should.equal( CONST.SCRAPE_FILENAME_COMPILED );
 			recipe.files[2].name.should.equal( CONST.PAGE_LOOP_FILENAME_COMPILED );
+		} );
+		it( "embeds fs.readFileSync resources", function() {
+			recipe.pageLoopFile.indexOf( "<img src=\\\"img/image.png\\\"/>" ).should.not.equal( -1 );
+			recipe.scrapeFile.indexOf( "<img src=\\\"img/image.png\\\"/>" ).should.not.equal( -1 );
 		} );
 	} );
 	describe( "updatePaths(recipe, newPath)", function() {

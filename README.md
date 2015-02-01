@@ -735,8 +735,23 @@ If you provide, both, address and displayAddress, only displayAddress will be sh
 
 By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
 
+## Caveats
+
+### require('fs')
+
+You can load templates or other textual resources using the fs module's readFileSync (**available starting from Pagehop 1.2**).
+At compile time, calls to readFileSync are replaced with the actual content of the files (you can check the [brfs](https://www.npmjs.com/package/brfs) npm module for more info). The parsing brfs does in order to replace the statements, is **very delicate** and **easily breaks**, but if you require fs and path in two separate var-statements and load the file in a third, you will be fine:
+
+```javascript
+var path = require('path');
+var fs = require('fs');
+var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), "utf-8" );
+```
+
 ## Release History
 
+ - 1.0.7
+   - Add: loading resources through fs.readFileSync() in recipes (page-loop & scrape) and tools.
  - 1.0.6
    - Update: boxtree;
    - Fix: tests are failing on Windows.

@@ -1,5 +1,9 @@
 'use strict';
 
+var path = require('path');
+var fs = require('fs');
+var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), "utf-8" );
+
 var items = document.querySelectorAll(".g .r a");
 
 var result = [];

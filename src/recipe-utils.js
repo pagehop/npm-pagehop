@@ -207,6 +207,7 @@ var recipeUtils = {
 ( function(){
 		var b = browserify();
 		b.add( recipe.pageLoopPath );
+		b.transform( "brfs" );
 		var readable = b.bundle();
 		var data = "";
 		readable.on('data', function(chunk) {
@@ -222,6 +223,7 @@ var recipeUtils = {
 		});
 } )();
 		var newB = browserify();
+		newB.transform( "brfs" );
 		newB.add( recipe.scrapePath );
 		var newReadable = newB.bundle();
 		var data = "";

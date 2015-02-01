@@ -372,25 +372,12 @@ describe( 'toolUtils', function(){
 		} );
 	} );
 	describe( 'compileTool(tool)', function(){
-		var compiled = false,
-			rootPath = pathUtils.resolve( pathUtils.join( __dirname, "test-data/tool/correct" ) ),
+		var rootPath = pathUtils.resolve( pathUtils.join( __dirname, "test-data/tool/correct" ) ),
 			tool = toolUtils.loadTool( rootPath ),
 			srcToolFile = tool.toolFile;
 
-		toolUtils.compileTool( tool, function() {
-			compiled = true;
-		} );
-		var checkCompiled = function(done) {
-			if ( compiled ) {
-				done();
-			} else {
-				setTimeout( function() {
-					checkCompiled( done );
-				}, 0 );
-			}
-		};
 		before( function(done) {
-			checkCompiled( done );
+			toolUtils.compileTool( tool, done );
 		} );
 
 		it( "successfully compiles tool's code file", function(){
@@ -408,6 +395,9 @@ describe( 'toolUtils', function(){
 			).should.be.ok;
 			tool.files[0].name.should.equal( CONST.SETTINGS_FILENAME );
 			tool.files[1].name.should.equal( CONST.TOOL_FILENAME_COMPILED );
+		} );
+		it( "embeds fs.readFileSync resources", function() {
+			tool.toolFile.indexOf( "<img src=\\\"img/image.png\\\"/>" ).should.not.equal( -1 );
 		} );
 	} );
 	describe( 'updatePaths(tool, newPath)', function() {

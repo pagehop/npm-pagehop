@@ -1,12 +1,14 @@
 'use strict';
 
-var util = require('util');
-
-var urlTemplate = 'http://www.google.com/search?hl=en&q=%s&start=%s&sa=N&num=%s&ie=UTF-8&oe=UTF-8';
-
-var startAt = 0,
+var util = require('util'),
+  urlTemplate = 'http://www.google.com/search?hl=en&q=%s&start=%s&sa=N&num=%s&ie=UTF-8&oe=UTF-8',
+  startAt = 0,
   itemsAtPage = 100,
   query = pagehop.getQuery();
+
+var path = require('path');
+var fs = require('fs');
+var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), "utf-8" );
 
 var allResults = [];
 
