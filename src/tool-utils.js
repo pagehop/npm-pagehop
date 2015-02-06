@@ -162,9 +162,12 @@ var toolUtils = {
 			data: tool.settingsFile
 		} );
 
-		var b = browserify();
+		var b = browserify(),
+			brfsOpts = {
+				basedir: pathUtils.resolve( __dirname, "node_modules", "pagehop" )
+			};
 		b.add( tool.toolPath );
-		b.transform( "brfs" );
+		b.transform( "brfs", brfsOpts );
 		var readable = b.bundle();
 		var data = "";
 		readable.on('data', function(chunk) {

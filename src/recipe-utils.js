@@ -195,6 +195,9 @@ var recipeUtils = {
 				if ( --asyncTasksCount === 0 ) {
 					callback();
 				}
+			},
+			brfsOpts = {
+				basedir: pathUtils.resolve( __dirname, "node_modules", "pagehop" )
 			};
 
 		recipe.files = [];
@@ -207,7 +210,7 @@ var recipeUtils = {
 ( function(){
 		var b = browserify();
 		b.add( recipe.pageLoopPath );
-		b.transform( "brfs" );
+		b.transform( "brfs", brfsOpts );
 		var readable = b.bundle();
 		var data = "";
 		readable.on('data', function(chunk) {
@@ -223,7 +226,7 @@ var recipeUtils = {
 		});
 } )();
 		var newB = browserify();
-		newB.transform( "brfs" );
+		newB.transform( "brfs", brfsOpts );
 		newB.add( recipe.scrapePath );
 		var newReadable = newB.bundle();
 		var data = "";

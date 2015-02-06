@@ -6,6 +6,7 @@
 var should = require("should"),
 	pathUtils = require('path'),
 	fs = require('fs'),
+	fork = require('child_process').fork,
 	wrench = require("wrench");
 
 var recipeUtils = require("../src/recipe-utils"),
@@ -489,6 +490,16 @@ describe( "recipeUtils", function() {
 		it( "embeds fs.readFileSync resources", function() {
 			recipe.pageLoopFile.indexOf( "<img src=\\\"img/image.png\\\"/>" ).should.not.equal( -1 );
 			recipe.scrapeFile.indexOf( "<img src=\\\"img/image.png\\\"/>" ).should.not.equal( -1 );
+		} );
+		it( "doesn't blow-up if cwd is incorrect", function(done) {
+			var child = fork( pathUtils.resolve( __dirname, "test-data", "recipe_utils_child_process" ), {
+				cwd: pathUtils.resolve( __dirname, "..", ".." )
+			} );
+
+			child.on( "exit", function(code) {
+				code.should.equal( 0 );
+				done();
+			} );
 		} );
 	} );
 	describe( "updatePaths(recipe, newPath)", function() {

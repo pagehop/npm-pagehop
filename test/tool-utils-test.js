@@ -6,6 +6,7 @@
 var should = require("should"),
 	pathUtils = require('path'),
 	fs = require('fs'),
+	fork = require('child_process').fork,
 	wrench = require("wrench");
 
 var toolUtils = require("../src/tool-utils"),
@@ -398,6 +399,16 @@ describe( 'toolUtils', function(){
 		} );
 		it( "embeds fs.readFileSync resources", function() {
 			tool.toolFile.indexOf( "<img src=\\\"img/image.png\\\"/>" ).should.not.equal( -1 );
+		} );
+		it( "doesn't blow-up if cwd is incorrect", function(done) {
+			var child = fork( pathUtils.resolve( __dirname, "test-data", "tool_utils_child_process" ), {
+				cwd: pathUtils.resolve( __dirname, "..", ".." )
+			} );
+
+			child.on( "exit", function(code) {
+				code.should.equal( 0 );
+				done();
+			} );
 		} );
 	} );
 	describe( 'updatePaths(tool, newPath)', function() {

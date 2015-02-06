@@ -750,6 +750,8 @@ var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), 
 
 ## Release History
 
+ - 1.0.8
+   - Fix: recipe and tool utils throw an error if cwd of the process is wrong.
  - 1.0.7
    - Add: loading resources through fs.readFileSync() in recipes (page-loop & scrape) and tools.
  - 1.0.6
