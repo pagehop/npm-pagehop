@@ -7,7 +7,7 @@
 (Synopsis of the usage)
 
 ```
-recipen[space]
+recipen
 ```
 
 ## Options
@@ -27,7 +27,7 @@ etc.
 ## Examples
 
 ```
-recipen[space]
+recipen
 recipen some query
 recipen :optionName
 recipen :optionName some query
