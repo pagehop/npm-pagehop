@@ -160,8 +160,10 @@ it( "scrape 1 page, if maxCount=30", function(done){
 			var query = "irrelevant",
 				options = [],
 				max = 30,
-				scrapeScript = "irrelevant";
-			pagehop.init( query, options, max, scrapeScript );
+				scrapeScript = "irrelevant",
+				systemMeta = {},
+				hops = [];
+			pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 		},
 		function(urls, result) {
 			should.exist( urls );
@@ -198,11 +200,13 @@ it( "finishes with error", function(done){
 			var query = "irrelevant",
 				options = [],
 				max = 200,
-				scrapeScript = "irrelevant";
+				scrapeScript = "irrelevant",
+				systemMeta = {},
+				hops = [];
 			pagehop.scrape = function(url, callback) {
 				callback( "blowup" );
 			};
-			pagehop.init( query, options, max, scrapeScript );
+			pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 		},
 		function(error) {
 			should.exist( error );
@@ -267,8 +271,10 @@ it( "scrapes the correct urls", function(done){
 			var query = "irrelevant",
 				options = [],
 				max = 40,
-				scrapeScript = "irrelevant";
-			window.pagehop.init( query, options, max, scrapeScript );
+				scrapeScript = "irrelevant",
+				systemMeta = {},
+				hops = [];
+			window.pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 		},
 		intermediateResults,
 		function(urls, result) {
@@ -427,7 +433,7 @@ Before running the scripts, Pagehop adds the pagehop global object (this is how 
 
 All data obtained from getter methods is immutable.
 
-##### pagehop.init(query, options, max, scrapeScript, systemMeta)
+##### pagehop.init(query, options, max, scrapeScript, systemMeta, hops)
 
 This method is used by Pagehop, to preset the environment for running your page-loop.js
 
@@ -439,6 +445,14 @@ Lets go through the params:
 - **max** - integer, >=10, the maximal number of results that can be returned by the recipe.
 - **scrapeScript** - **string**, Pagehop executes recipes producing a single script which is the page-loop.js with all of it's dependencies and the scrape script (if any), which is executed in a separate isolated environment upon calling pagehop.scrape() from your page-loop. Since you only should use pagehop.init() in tests, and since these tests should only test the page-loop.js, **never** the scrape.js (it's separately tested), you don't need to pass actual script in here, because it shouldn't get executed.
 - **systemMeta** - **object** with 2 fields (arrays) - **recipes**, **tools**. This is usually used by recipes that provide some system information about Pagehop (AllRecipes list the available recipes and AllTools list the tools).
+- **hops** - **MUTABLE array** of objects specifying addresses the user had "hopped of". Here is the format of the hop objects:
+
+```javascript
+{
+	text: "text",
+	address: "address"
+}
+```
 
 ##### pagehop.getMaxCount()
 
@@ -480,6 +494,17 @@ Tool objects look like this:
 	homepage: /* package.json:homepage */,
 	keyword: /* package.json:pagehop.keyword */
 } 
+```
+
+##### pagehop.getHops()
+
+Returns a **MUTABLE array** of objects specifying addresses the user had "hopped of". Recipes are usually using the hops array for a visual notification of which recipe is being used. Here is how you should use the hops array and how the objects in it look like:
+
+```javascript
+pagehop.getHops().push( {
+	text: "RecipeId",
+	address: "http://some.url.com/will/produce/same/results/but/in-browser"
+} );
 ```
 
 ##### pagehop.scrape( url, callback )
@@ -750,6 +775,11 @@ var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), 
 
 ## Release History
 
+ - 1.1.0
+   - Add: ability to manipulate the hops array in the page-loop api.
+ - 1.0.9
+   - Update: assets; 
+   - Update: should dev npm dependency (in project + in asset projects).
  - 1.0.8
    - Fix: recipe and tool utils throw an error if cwd of the process is wrong.
  - 1.0.7

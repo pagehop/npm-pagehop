@@ -81,12 +81,13 @@ describe( 'pagehop API for pageLoop', function(){
 				options = [ {} ],
 				max = 200,
 				scrapeScript = "testScript();",
+				hops = [],
 				systemMeta = {};
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				if (
 					pagehop.query === query &&
@@ -104,7 +105,7 @@ describe( 'pagehop API for pageLoop', function(){
 				should.exist( result );
 				result.should.be.ok;
 				done();
-			}, query, options, max, scrapeScript, systemMeta );
+			}, query, options, max, scrapeScript, systemMeta, hops );
 		} );
 	} );
 	describe( 'getMaxCount', function() {
@@ -126,12 +127,13 @@ describe( 'pagehop API for pageLoop', function(){
 				options = [ {} ],
 				max = 200,
 				scrapeScript = "testScript();",
-				systemMeta = {};
+				systemMeta = {},
+				hops = [];
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				return pagehop.getMaxCount() === max;
 			}, function(error, result) {
@@ -139,7 +141,7 @@ describe( 'pagehop API for pageLoop', function(){
 				should.exist( result );
 				result.should.be.ok;
 				done();
-			}, query, options, max, scrapeScript, systemMeta );
+			}, query, options, max, scrapeScript, systemMeta, hops );
 		} );
 	} );
 	describe( 'getOptions', function() {
@@ -161,12 +163,13 @@ describe( 'pagehop API for pageLoop', function(){
 				options = [ ":n" ],
 				max = 200,
 				scrapeScript = "testScript();",
-				systemMeta = {};
+				systemMeta = {},
+				hops = [];
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				return pagehop.getOptions() === options;
 			}, function(error, result) {
@@ -174,7 +177,7 @@ describe( 'pagehop API for pageLoop', function(){
 				should.exist( result );
 				result.should.be.ok;
 				done();
-			}, query, options, max, scrapeScript, systemMeta );
+			}, query, options, max, scrapeScript, systemMeta, hops );
 		} );
 	} );
 	describe( 'getQuery', function() {
@@ -196,12 +199,13 @@ describe( 'pagehop API for pageLoop', function(){
 				options = [ {} ],
 				max = 200,
 				scrapeScript = "testScript();",
-				systemMeta = {};
+				systemMeta = {},
+				hops = [];
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				return pagehop.getQuery() === query;
 			}, function(error, result) {
@@ -209,7 +213,7 @@ describe( 'pagehop API for pageLoop', function(){
 				should.exist( result );
 				result.should.be.ok;
 				done();
-			}, query, options, max, scrapeScript, systemMeta );
+			}, query, options, max, scrapeScript, systemMeta, hops );
 		} );
 	} );
 	describe( 'getSystemMeta', function() {
@@ -231,12 +235,13 @@ describe( 'pagehop API for pageLoop', function(){
 				options = [ {} ],
 				max = 200,
 				scrapeScript = "testScript();",
-				systemMeta = {};
+				systemMeta = {},
+				hops = [];
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				return pagehop.getSystemMeta() === systemMeta;
 			}, function(error, result) {
@@ -244,7 +249,65 @@ describe( 'pagehop API for pageLoop', function(){
 				should.exist( result );
 				result.should.be.ok;
 				done();
-			}, query, options, max, scrapeScript, systemMeta );
+			}, query, options, max, scrapeScript, systemMeta, hops );
+		} );
+	} );
+	describe( 'getHops', function() {
+		beforeEach( beforeEachFunc );
+		it( "should return null if it's not set through init", function(done) {
+			page.evaluate( function() {
+				var pagehop = window.pagehop;
+
+				return pagehop.getHops() === null;
+			}, function(error, result) {
+				should.not.exist( error );
+				should.exist( result );
+				result.should.be.ok;
+				done();
+			} );
+		} );
+		it( "should return set value", function(done) {
+			var query = "testQuery",
+				options = [ {} ],
+				max = 200,
+				scrapeScript = "testScript();",
+				systemMeta = {},
+				hops = [];
+
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
+				var pagehop = window.pagehop;
+
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
+
+				return pagehop.getHops() === hops;
+			}, function(error, result) {
+				should.not.exist( error );
+				should.exist( result );
+				result.should.be.ok;
+				done();
+			}, query, options, max, scrapeScript, systemMeta, hops );
+		} );
+		it( "should give a reference to the hops prop (no need to set in order to change)", function(done) {
+			var query = "testQuery",
+				options = [ {} ],
+				max = 200,
+				scrapeScript = "testScript();",
+				systemMeta = {},
+				hops = [];
+
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops) {
+				var pagehop = window.pagehop;
+
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
+				pagehop.getHops().push( "hop" );
+
+				return pagehop.hops.length === 1;
+			}, function(error, result) {
+				should.not.exist( error );
+				should.exist( result );
+				result.should.be.ok;
+				done();
+			}, query, options, max, scrapeScript, systemMeta, hops );
 		} );
 	} );
 	describe( 'scrape', function() {
@@ -255,12 +318,13 @@ describe( 'pagehop API for pageLoop', function(){
 				max = 200,
 				scrapeScript = "testScript();",
 				systemMeta = {},
+				hops = [],
 				url = "http://test/";
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta, url) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops, url) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				pagehop.scrape( url, function() {} );
 
@@ -277,7 +341,7 @@ describe( 'pagehop API for pageLoop', function(){
 					]
 				}] );
 				done();
-			}, query, options, max, scrapeScript, systemMeta, url );
+			}, query, options, max, scrapeScript, systemMeta, hops, url );
 		} );
 	} );
 	describe( 'updateResults', function() {
@@ -288,12 +352,13 @@ describe( 'pagehop API for pageLoop', function(){
 				max = 200,
 				scrapeScript = "testScript();",
 				systemMeta = {},
+				hops = [],
 				results = [1, 2];
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta, results) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops, results) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				pagehop.updateResults( results );
 
@@ -305,11 +370,14 @@ describe( 'pagehop API for pageLoop', function(){
 					call: "emitEvent",
 					arguments: [
 						"update",
-						results
+						{
+							items: results,
+							hops: hops
+						}
 					]
 				}] );
 				done();
-			}, query, options, max, scrapeScript, systemMeta, results );
+			}, query, options, max, scrapeScript, systemMeta, hops, results );
 		} );
 	} );
 	describe( 'finishWithError', function() {
@@ -320,15 +388,16 @@ describe( 'pagehop API for pageLoop', function(){
 				max = 200,
 				scrapeScript = "testScript();",
 				systemMeta = {},
+				hops = [],
 				error = {
 					type: "timeout",
 					message: "sample timeout error"
 				};
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta, error) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops, error) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				pagehop.finishWithError( error );
 
@@ -344,7 +413,7 @@ describe( 'pagehop API for pageLoop', function(){
 					]
 				}] );
 				done();
-			}, query, options, max, scrapeScript, systemMeta, error );
+			}, query, options, max, scrapeScript, systemMeta, hops, error );
 		} );
 	} );
 	describe( 'finish', function() {
@@ -355,12 +424,13 @@ describe( 'pagehop API for pageLoop', function(){
 				max = 200,
 				scrapeScript = "testScript();",
 				systemMeta = {},
+				hops = [],
 				results = [ {}, {} ];
 
-			page.evaluate( function(query, options, max, scrapeScript, systemMeta, results) {
+			page.evaluate( function(query, options, max, scrapeScript, systemMeta, hops, results) {
 				var pagehop = window.pagehop;
 
-				pagehop.init( query, options, max, scrapeScript, systemMeta );
+				pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 
 				pagehop.finish( results );
 
@@ -368,15 +438,18 @@ describe( 'pagehop API for pageLoop', function(){
 			}, function(error, result) {
 				should.not.exist( error );
 				should.exist( result );
-				result.should.be.eql( [{
+				result.should.eql( [{
 					call: "emitEvent",
 					arguments: [
 						"finish",
-						results
+						{
+							items: results,
+							hops: hops
+						}
 					]
 				}] );
 				done();
-			}, query, options, max, scrapeScript, systemMeta, results );
+			}, query, options, max, scrapeScript, systemMeta, hops, results );
 		} );
 	} );
 	after( afterAllFunc );

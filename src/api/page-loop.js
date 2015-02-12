@@ -9,14 +9,16 @@ window.pagehop = {
 	max: 0,
 	scrapeScript: null,
 	systemMeta: null,
+	hops: null,
 
-	init: function(query, options, max, scrapeScript, systemMeta) {
+	init: function(query, options, max, scrapeScript, systemMeta, hops) {
 		var self = this;
 		self.query = query;
 		self.options = options;
 		self.max = max;
 		self.scrapeScript = scrapeScript;
 		self.systemMeta = systemMeta;
+		self.hops = hops;
 	},
 
 	getMaxCount: function() {
@@ -39,6 +41,11 @@ window.pagehop = {
 		return self.systemMeta;
 	},
 
+	getHops: function() {
+		var self = this;
+		return self.hops;
+	},
+
 	scrape: function(url, callback) {
 		var self = this,
 			script = self.scrapeScript;
@@ -47,7 +54,13 @@ window.pagehop = {
 	},
 
 	updateResults: function(results) {
-		boxApi.emitEvent( "update", results );
+		var self = this,
+			args = {
+				items: results,
+				hops: self.hops
+			};
+
+		boxApi.emitEvent( "update", args );
 	},
 
 	finishWithError: function( error ) {
@@ -55,7 +68,13 @@ window.pagehop = {
 	},
 
 	finish: function(results) {
-		boxApi.emitEvent( "finish", results );
+		var self = this,
+			args = {
+				items: results,
+				hops: self.hops
+			};
+
+		boxApi.emitEvent( "finish", args );
 	}
 
 };
