@@ -22,6 +22,7 @@ var recipeLoadsOK = function(rootPath) {
 
 	( result !== undefined ).should.be.ok;
 
+	result.dirPath.should.equal( rootPath );
 	result.pageLoopPath.should.equal( pathUtils.join( rootPath, CONST.PAGE_LOOP_FILENAME ) );
 	result.scrapePath.should.equal( pathUtils.join( rootPath, CONST.SCRAPE_FILENAME ) );
 	( result.settingsFile !== null ).should.be.ok;
@@ -454,6 +455,7 @@ describe( "recipeUtils", function() {
 					}
 				]
 			);
+			result.dirPath.should.equal( rootPath );
 			result.pageLoopPath.should.equal( pathUtils.join( rootPath, CONST.PAGE_LOOP_FILENAME_COMPILED ) );
 			result.scrapePath.should.equal( pathUtils.join( rootPath, CONST.SCRAPE_FILENAME_COMPILED ) );
 			( result.settingsFile !== null ).should.be.ok;
@@ -505,10 +507,12 @@ describe( "recipeUtils", function() {
 	describe( "updatePaths(recipe, newPath)", function() {
 		it( "should update correctly pageLoopPath and scrapePath", function() {
 			var recipe = {
+				dirPath: null,
 				pageLoopPath: null,
 				scrapePath: null
 			};
 			recipeUtils.updatePaths( recipe, "test" );
+			recipe.dirPath.should.equal( pathUtils.normalize( "test" ) );
 			recipe.pageLoopPath.should.equal( pathUtils.normalize( "test/page-loop-compiled.js" ) );
 			recipe.scrapePath.should.equal( pathUtils.normalize( "test/scrape-compiled.js" ) );
 		} );

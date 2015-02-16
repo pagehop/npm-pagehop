@@ -63,6 +63,7 @@ var recipeUtils = {
 				options: [],
 				hasQuery: false,
 
+				dirPath:null,
 				pageLoopPath:null,
 				scrapePath: null,
 
@@ -85,6 +86,7 @@ var recipeUtils = {
 			throw new Error( CONST.SCRAPE_FILENAME + " is missing! Even if you don't use it, the file is required." );
 		}
 
+		result.dirPath = path;
 		result.pageLoopPath = pageLoopPath;
 		result.scrapePath = scrapePath;
 
@@ -244,6 +246,7 @@ var recipeUtils = {
 	},
 
 	updatePaths: function( recipe, newPath ) {
+		recipe.dirPath = newPath;
 		recipe.pageLoopPath = pathUtils.join( newPath, CONST.PAGE_LOOP_FILENAME_COMPILED );
 		recipe.scrapePath = pathUtils.join( newPath, CONST.SCRAPE_FILENAME_COMPILED );
 	}

@@ -775,6 +775,8 @@ var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), 
 
 ## Release History
 
+ - 1.1.1
+   - Add: dirPath prop in recipe and tool specs produced by the *-utils.
  - 1.1.0
    - Add: ability to manipulate the hops array in the page-loop api.
  - 1.0.9

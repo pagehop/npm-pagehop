@@ -23,6 +23,7 @@ var toolLoadsOK = function(rootPath) {
 	( result !== null ).should.be.ok;
 	( result.settingsFile !== null ).should.be.ok;
 	( result.toolFile === null ).should.be.ok;
+	result.dirPath.should.equal( rootPath );
 	result.toolPath.should.equal( pathUtils.join( rootPath, CONST.TOOL_FILENAME ) );
 
 	return result;
@@ -367,6 +368,7 @@ describe( 'toolUtils', function(){
 			result.id.should.equal( "FuzzySearch" );
 			result.version.should.equal( "0.1.0" );
 			result.keyword.should.equal( ":f" );
+			result.dirPath.should.equal( rootPath );
 			result.toolPath.should.equal( pathUtils.join( rootPath, CONST.TOOL_FILENAME_COMPILED ) );
 			( result.settingsFile !== null ).should.be.ok;
 			( result.toolFile !== null ).should.be.ok;
@@ -418,6 +420,7 @@ describe( 'toolUtils', function(){
 				scrapePath: null
 			};
 			toolUtils.updatePaths( tool, "test" );
+			tool.dirPath.should.equal( pathUtils.normalize( "test" ) );
 			tool.toolPath.should.equal( pathUtils.normalize( "test/tool-compiled.js" ) );
 		} );
 	} );

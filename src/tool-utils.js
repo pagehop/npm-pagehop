@@ -61,6 +61,7 @@ var toolUtils = {
 				version: null,
 				homepage: null,
 
+				dirPath:null,
 				toolPath:null,
 
 				settingsFile: null,
@@ -77,6 +78,7 @@ var toolUtils = {
 			throw new Error( CONST.TOOL_FILENAME + " is missing!" );
 		}
 
+		result.dirPath = path;
 		result.toolPath = toolPath;
 
 		if ( !fs.statSync( packageJsonPath ).isFile() ) {
@@ -184,6 +186,7 @@ var toolUtils = {
 	},
 
 	updatePaths: function( tool, newPath ) {
+		tool.dirPath = newPath;
 		tool.toolPath = pathUtils.join( newPath, CONST.TOOL_FILENAME_COMPILED );
 	}
 
