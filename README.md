@@ -431,8 +431,6 @@ Before running the scripts, Pagehop adds the pagehop global object (this is how 
 
 #### pagehop API (page-loop.js)
 
-All data obtained from getter methods is immutable.
-
 ##### pagehop.init(query, options, max, scrapeScript, systemMeta, hops)
 
 This method is used by Pagehop, to preset the environment for running your page-loop.js
@@ -531,7 +529,8 @@ The result object is always entirely up to your scrape script.
 	address: /* string, url */,
 	displayText: /* string that can contain html formatting */,
 	displayAddress: /* string that can contain html formatting */,
-	tooltip: /* string */
+	tooltip: /* string */,
+	preview: /* string (html) */
 }
 ```
 
@@ -566,7 +565,8 @@ Here is how your result objects should look like:
 	address: /* string, url */,
 	displayText: /* string that can contain html formatting */,
 	displayAddress: /* string that can contain html formatting */,
-	tooltip: /* string */
+	tooltip: /* string */,
+	preview: /* string (html) */
 }
 ```
 
@@ -576,9 +576,9 @@ If you provide, both, address and displayAddress, only displayAddress will be sh
 
 By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
 
-#### pagehop API (scrape.js)
+Starting from ver1.2, you can optionally supply a preview html to be loaded in Pagehop's UI. Recipes such as DefineWord, CodeSearch and others use it. Local resources you reffer from this html should assume the recipe's root dir as / (web root).
 
-All data obtained from getter methods is immutable.
+#### pagehop API (scrape.js)
 
 ##### pagehop.init(query, options, max)
 
@@ -664,7 +664,9 @@ The result objects follow this structure:
 	address: /* string, url */,
 	displayText: /* string that can contain html formatting */,
 	displayAddress: /* string that can contain html formatting */,
-	tooltip: /* string */
+	tooltip: /* string */,
+	preview: /* string (html) */
+
 }
 ```
 
@@ -748,7 +750,8 @@ Here is how your result objects should look like:
 	address: /* string, url */,
 	displayText: /* string that can contain html formatting */,
 	displayAddress: /* string that can contain html formatting */,
-	tooltip: /* string */
+	tooltip: /* string */,
+	preview: /* string (html) */
 }
 ```
 
@@ -759,6 +762,8 @@ If you provide, both, text and displayText, displayText will be shown as the fir
 If you provide, both, address and displayAddress, only displayAddress will be shown, on the second row.
 
 By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
+
+Starting from ver1.2, you can optionally supply a preview html to be loaded in Pagehop's UI. Recipes such as DefineWord, CodeSearch and others use it - it can be used in the same manner with tools. Local resources you reffer from this html should assume the tool's root dir as / (web root).
 
 ## Caveats
 
