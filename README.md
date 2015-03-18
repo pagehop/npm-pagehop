@@ -778,8 +778,15 @@ var fs = require('fs');
 var htmlTemplate = fs.readFileSync( path.resolve( __dirname, "template.html" ), "utf-8" );
 ```
 
+Although ECMAScript 6 style of requiring dependencies (import & export keywords) is supported for everything else, you can't use it for fs and path, in the above snippet. You have to use the snippet as it is.
+
 ## Release History
 
+ - 1.1.2
+   - Add: partial support of ECMAScript 6 (through Babel);
+   - Refactor: browserify transforms usages;
+   - Update: browserify to latest;
+   - Update: brfs to latest.
  - 1.1.1
    - Add: dirPath prop in recipe and tool specs produced by the *-utils.
  - 1.1.0

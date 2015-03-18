@@ -4,7 +4,9 @@ var pathUtils = require('path'),
 	fs = require('fs'),
 	semver = require("semver"),
 	browserify = require("browserify"),
-	commonUtils = require("./common-utils");
+	commonUtils = require("./common-utils"),
+	brfs = require("brfs"),
+	babelify = require("babelify");
 
 var CONST = require("./const");
 
@@ -197,9 +199,6 @@ var recipeUtils = {
 				if ( --asyncTasksCount === 0 ) {
 					callback();
 				}
-			},
-			brfsOpts = {
-				basedir: pathUtils.resolve( __dirname, "node_modules", "pagehop" )
 			};
 
 		recipe.files = [];
@@ -212,7 +211,8 @@ var recipeUtils = {
 ( function(){
 		var b = browserify();
 		b.add( recipe.pageLoopPath );
-		b.transform( "brfs", brfsOpts );
+		b.transform( babelify );
+		b.transform( brfs );
 		var readable = b.bundle();
 		var data = "";
 		readable.on('data', function(chunk) {
@@ -228,7 +228,8 @@ var recipeUtils = {
 		});
 } )();
 		var newB = browserify();
-		newB.transform( "brfs", brfsOpts );
+		newB.transform( babelify );
+		newB.transform( brfs );
 		newB.add( recipe.scrapePath );
 		var newReadable = newB.bundle();
 		var data = "";

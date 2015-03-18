@@ -10,6 +10,7 @@ var should = require("should"),
 	wrench = require("wrench");
 
 var recipeUtils = require("../src/recipe-utils"),
+	test = require("../src/tester"),
 	CONST = require("../src/const"),
 	rootPath = pathUtils.resolve( __dirname, "test-data" );
 
@@ -33,6 +34,9 @@ var recipeLoadsOK = function(rootPath) {
 };
 
 describe( "recipeUtils", function() {
+	before( function(done) {
+		test.init( done );
+	} );
 	describe( "scaffoldRecipe(path)", function() {
 		it( "throws an error if pageLoopPath exists (file)", function() {
 			should( function() {
@@ -503,6 +507,53 @@ describe( "recipeUtils", function() {
 				done();
 			} );
 		} );
+
+		// past here cases don't reuse the same state
+
+		it( "transpiles EcmaScript 6 code", function(done) {
+			var rootPath = pathUtils.resolve( pathUtils.join( __dirname, "test-data/es6-recipe" ) ),
+				recipe = recipeUtils.loadRecipe( rootPath ),
+				expectedCompiledRecipe = recipeUtils.loadCompiledRecipe( rootPath );
+
+			recipeUtils.compileRecipe( recipe, function() {
+				recipe.pageLoopFile.indexOf( "<html></html>" ).should.not.equal( -1 );
+
+				recipe.pageLoopFile.should.equal( expectedCompiledRecipe.pageLoopFile );
+				recipe.scrapeFile.should.equal( expectedCompiledRecipe.scrapeFile );
+
+				test.pageLoop(
+					rootPath,
+					function() {
+						var query = null,
+							options = null,
+							max = 200,
+							scrapeScript = "irrelevant",
+							systemMeta = null,
+							hops = [];
+						window.pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
+					},
+					function(urls, result) {
+						should.exist( urls );
+						should.exist( result );
+						urls.length.should.equal( 0 );
+
+						result.items.should.eql( [
+							{
+								text: "Title1",
+								address: "http://example.com/title1",
+								preview: "<html></html>"
+							},
+							{
+								text: "Title2",
+								address: "http://example.com/title2",
+								preview: "<html></html>"
+							}
+						] );
+						done();
+					}
+				);
+			} );
+		} );
 	} );
 	describe( "updatePaths(recipe, newPath)", function() {
 		it( "should update correctly pageLoopPath and scrapePath", function() {
@@ -516,5 +567,8 @@ describe( "recipeUtils", function() {
 			recipe.pageLoopPath.should.equal( pathUtils.normalize( "test/page-loop-compiled.js" ) );
 			recipe.scrapePath.should.equal( pathUtils.normalize( "test/scrape-compiled.js" ) );
 		} );
+	} );
+	after( function(done) {
+		test.finalize( done );
 	} );
 } );

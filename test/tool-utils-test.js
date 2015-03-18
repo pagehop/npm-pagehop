@@ -10,6 +10,7 @@ var should = require("should"),
 	wrench = require("wrench");
 
 var toolUtils = require("../src/tool-utils"),
+	test = require("../src/tester"),
 	CONST = require("../src/const"),
 	rootPath = pathUtils.resolve( __dirname, "test-data" );
 
@@ -30,6 +31,10 @@ var toolLoadsOK = function(rootPath) {
 };
 
 describe( 'toolUtils', function(){
+	before( function(done) {
+		this.timeout( 5000 );
+		test.init( done );
+	} );
 	describe( "scaffoldTool(path)", function() {
 		it( "throws an error if toolFilePath exists (file)", function() {
 			should( function() {
@@ -412,6 +417,49 @@ describe( 'toolUtils', function(){
 				done();
 			} );
 		} );
+
+		// past here cases don't reuse the same state
+
+		it( "transpiles EcmaScript 6 code", function(done) {
+			var rootPath = pathUtils.resolve( pathUtils.join( __dirname, "test-data/es6-tool" ) ),
+				tool = toolUtils.loadTool( rootPath ),
+				expectedCompiledTool = toolUtils.loadCompiledTool( rootPath );
+
+			toolUtils.compileTool( tool, function() {
+				tool.toolFile.indexOf( "<html></html>" ).should.not.equal( -1 );
+
+				tool.toolFile.should.equal( expectedCompiledTool.toolFile );
+
+				test.tool(
+					rootPath,
+					function() {
+						var currentResults = [],
+							hops = [],
+							argument = null,
+							selection = 0;
+						window.pagehop.init( currentResults, hops, argument, selection );
+					},
+					function(result) {
+						should.exist( result );
+
+						result.items.should.eql( [
+							{
+								text: "Title1",
+								address: "http://example.com/title1",
+								preview: "<html></html>"
+							},
+							{
+								text: "Title2",
+								address: "http://example.com/title2",
+								preview: "<html></html>"
+							}
+						] );
+
+						done();
+					}
+				);
+			} );
+		} );
 	} );
 	describe( 'updatePaths(tool, newPath)', function() {
 		it( "should update correctly pageLoopPath and scrapePath", function() {
@@ -423,5 +471,8 @@ describe( 'toolUtils', function(){
 			tool.dirPath.should.equal( pathUtils.normalize( "test" ) );
 			tool.toolPath.should.equal( pathUtils.normalize( "test/tool-compiled.js" ) );
 		} );
+	} );
+	after( function(done) {
+		test.finalize( done );
 	} );
 } );

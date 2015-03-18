@@ -4,7 +4,9 @@ var pathUtils = require('path'),
 	fs = require('fs'),
 	semver = require("semver"),
 	browserify = require("browserify"),
-	commonUtils = require("./common-utils");
+	commonUtils = require("./common-utils"),
+	brfs = require("brfs"),
+	babelify = require("babelify");
 
 var CONST = require("./const");
 
@@ -164,12 +166,10 @@ var toolUtils = {
 			data: tool.settingsFile
 		} );
 
-		var b = browserify(),
-			brfsOpts = {
-				basedir: pathUtils.resolve( __dirname, "node_modules", "pagehop" )
-			};
+		var b = browserify();
 		b.add( tool.toolPath );
-		b.transform( "brfs", brfsOpts );
+		b.transform( babelify );
+		b.transform( brfs );
 		var readable = b.bundle();
 		var data = "";
 		readable.on('data', function(chunk) {
