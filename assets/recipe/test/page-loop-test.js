@@ -35,15 +35,17 @@ describe("recipe-name's pageLoop",function(){
 					var query = "irrelevant",
 						options = [],
 						max = 30,
-						scrapeScript = "irrelevant";
-					pagehop.init( query, options, max, scrapeScript );
+						scrapeScript = "irrelevant",
+						systemMeta = null,
+						hops = [];
+					pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 				},
 				intermediateResults,
-				function(urls, result) {
+				function(urls, results) {
 					should.exist( urls );
-					should.exist( result );
+					should.exist( results );
 					urls.length.should.equal( 1 );
-					result.length.should.equal( 30 );
+					results.items.length.should.equal( 30 );
 					done();
 				}
 			);
@@ -61,15 +63,17 @@ describe("recipe-name's pageLoop",function(){
 					var query = "irrelevant",
 						options = [],
 						max = 100,
-						scrapeScript = "irrelevant";
-					pagehop.init( query, options, max, scrapeScript );
+						scrapeScript = "irrelevant",
+						systemMeta = null,
+						hops = [];
+					pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 				},
 				intermediateResults,
-				function(urls, result) {
+				function(urls, results) {
 					should.exist( urls );
-					should.exist( result );
+					should.exist( results );
 					urls.length.should.equal( 1 );
-					result.length.should.equal( 89 );
+					results.items.length.should.equal( 89 );
 					done();
 				}
 			);
@@ -83,12 +87,14 @@ describe("recipe-name's pageLoop",function(){
 					var query = "irrelevant",
 						options = [],
 						max = 40,
-						scrapeScript = "irrelevant";
-					pagehop.init( query, options, max, scrapeScript );
+						scrapeScript = "irrelevant",
+						systemMeta = null,
+						hops = [];
+					pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 				},
-				function(urls, result) {
+				function(urls, results) {
 					should.exist( urls );
-					result.should.eql( [] );
+					results.items.should.eql( [] );
 					urls.length.should.equal( 1 );
 					urls[0].should.equal( "http://example.com/?q=irrelevant" );
 					done();
@@ -104,12 +110,14 @@ describe("recipe-name's pageLoop",function(){
 					var query = "irrelevant",
 						options = [":optionName"],
 						max = 10,
-						scrapeScript = "irrelevant";
-					pagehop.init( query, options, max, scrapeScript );
+						scrapeScript = "irrelevant",
+						systemMeta = null,
+						hops = [];
+					pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 				},
-				function(urls, result) {
+				function(urls, results) {
 					should.exist( urls );
-					result.should.eql( [] );
+					results.items.should.eql( [] );
 					urls.length.should.equal( 1 );
 					urls[0].should.equal( "http://withoption.example.com/?q=irrelevant" );
 					done();
@@ -125,12 +133,14 @@ describe("recipe-name's pageLoop",function(){
 					var query = "irrelevant",
 						options = [],
 						max = 200,
-						scrapeScript = "irrelevant";
+						scrapeScript = "irrelevant",
+						systemMeta = null,
+						hops = [];
 					pagehop.scrape = function(url, callback) {
 						window.boxApi.emitEvent( "scrape", url );
 						callback( "blowup" );
 					};
-					pagehop.init( query, options, max, scrapeScript );
+					pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
 				},
 				function(error) {
 					should.exist( error );

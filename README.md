@@ -782,6 +782,9 @@ Although ECMAScript 6 style of requiring dependencies (import & export keywords)
 
 ## Release History
 
+ - 1.1.3
+   - Update: assets: recipe: new recipe init API;
+   - Update: assets: recipe: new recipe result structure;
  - 1.1.2
    - Add: partial support of ECMAScript 6 (through Babel);
    - Refactor: browserify transforms usages;
