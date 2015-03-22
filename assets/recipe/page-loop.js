@@ -14,6 +14,11 @@ pagehop.scrape( url, function(error, result) {
 		pagehop.finishWithError( error );
 	}
 
+	pagehop.getHops().push( {
+		text: "RecipeName",
+		address: "http://example.com"
+	} );
+
 	pagehop.finish( result );
 
 } );

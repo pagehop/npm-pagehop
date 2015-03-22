@@ -782,6 +782,8 @@ Although ECMAScript 6 style of requiring dependencies (import & export keywords)
 
 ## Release History
 
+ - 1.1.4
+   - Update: assets: recipe: make use of the hops array;
  - 1.1.3
    - Update: assets: recipe: new recipe init API;
    - Update: assets: recipe: new recipe result structure;

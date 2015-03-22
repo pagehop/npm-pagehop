@@ -79,6 +79,33 @@ describe("recipe-name's pageLoop",function(){
 			);
 		});
 	} );
+	describe( "hops array changes", function() {
+		it( "adds a single item to the hops array", function(done){
+			test.pageLoop(
+				pathToRecipe,
+				function() {
+					var query = "irrelevant",
+						options = [],
+						max = 100,
+						scrapeScript = "irrelevant",
+						systemMeta = null,
+						hops = [];
+					pagehop.init( query, options, max, scrapeScript, systemMeta, hops );
+				},
+				function(urls, results) {
+					should.exist( urls );
+					should.exist( results );
+
+					results.hops.should.eql( [ {
+						text: "RecipeName",
+						address: "http://example.com"
+					} ] );
+
+					done();
+				}
+			);
+		});
+	} );
 	describe( "urls of pages to be scraped", function() {
 		it( "scrapes the correct urls", function(done){
 			test.pageLoop(
