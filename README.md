@@ -782,6 +782,8 @@ Although ECMAScript 6 style of requiring dependencies (import & export keywords)
 
 ## Release History
 
+ - 1.1.5
+   - Fix: assets: recipe&tool: jshint fails on ES6 code;
  - 1.1.4
    - Update: assets: recipe: make use of the hops array;
  - 1.1.3
