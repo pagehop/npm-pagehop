@@ -1,7 +1,6 @@
 'use strict';
 
 var should = require("should"),
-	pathUtils = require("path"),
 	expected = require("./data/results"),
 	recipe = require("../recipe");
 
@@ -20,7 +19,7 @@ describe("recipe-name's test",function(){
 				}
 			};
 
-			recipe.run( pagehopMock )
+			recipe.run( pagehopMock );
 		});
 	} );
 	describe( "if :optionName isn't passed", function() {
@@ -31,12 +30,12 @@ describe("recipe-name's test",function(){
 				},
 
 				finish: function( results ) {
-					results.should.eql( expected.without_options );
+					results.should.eql( expected.without_option );
 					done();
 				}
 			};
 
-			recipe.run( pagehopMock )
+			recipe.run( pagehopMock );
 		});
 	} );
 });

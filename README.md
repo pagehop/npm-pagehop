@@ -957,8 +957,10 @@ Although ECMAScript 6 style of requiring dependencies (import & export keywords)
 
 ## Release History
 
+ - 1.2.1
+   - Fix: native-recipe default scaffold produces error on test run.
  - 1.2.0
-   - Add: native (Node.js) recipes;
+   - Add: native (Node.js) recipes.
  - 1.1.5
    - Fix: assets: recipe&tool: jshint fails on ES6 code;
  - 1.1.4
