@@ -12,8 +12,9 @@ var CONST = require("./const");
 
 var recipeUtils = {
 
-	scaffoldRecipe: function(path) {
+	scaffoldRecipe: function(path, isNative) {
 		var packageJsonPath = pathUtils.join( path, CONST.SETTINGS_FILENAME ),
+			nativeRecipePath = pathUtils.join( path, CONST.NATIVE_RECIPE_FILENAME ),
 			pageLoopPath = pathUtils.join( path, CONST.PAGE_LOOP_FILENAME ),
 			scrapePath = pathUtils.join( path, CONST.SCRAPE_FILENAME ),
 			testDirPath = pathUtils.join( path, CONST.TEST_DIR_NAME ),
@@ -21,44 +22,101 @@ var recipeUtils = {
 			readmeFilePath = pathUtils.join( path, CONST.README_FILE_NAME ),
 			gruntFilePath = pathUtils.join( path, CONST.GRUNT_FILE_NAME ),
 			jshintFilePath = pathUtils.join( path, CONST.JSHINTRC_FILE_NAME ),
-			gitignoreFilePath = pathUtils.join( path, CONST.GITIGNORE_FILE_NAME );
+			gitignoreFilePath = pathUtils.join( path, CONST.GITIGNORE_FILE_NAME ),
+			templateRecipePath = isNative ?
+				pathUtils.resolve( __dirname, "..", "assets", "native-recipe" ) :
+				pathUtils.resolve( __dirname, "..", "assets", "recipe" );
 
-		if (
-			fs.existsSync( packageJsonPath )	||
-			fs.existsSync( pageLoopPath )		||
-			fs.existsSync( scrapePath )			||
-			fs.existsSync( testDirPath )		||
-			fs.existsSync( licenseFilePath )	||
-			fs.existsSync( readmeFilePath )		||
-			fs.existsSync( gruntFilePath )		||
-			fs.existsSync( jshintFilePath )		||
-			fs.existsSync( gitignoreFilePath )
-		) {
-			throw new Error( "The dir contains dirs and/or files with names colliding with the default recipe template" );
+		if ( isNative ) {
+			if (
+				fs.existsSync( packageJsonPath )	||
+				fs.existsSync( nativeRecipePath )	||
+				fs.existsSync( testDirPath )		||
+				fs.existsSync( licenseFilePath )	||
+				fs.existsSync( readmeFilePath )		||
+				fs.existsSync( gruntFilePath )		||
+				fs.existsSync( jshintFilePath )		||
+				fs.existsSync( gitignoreFilePath )
+			) {
+				throw new Error( "The dir contains dirs and/or files with names colliding with the default recipe template" );
+			}
+		} else {
+			if (
+				fs.existsSync( packageJsonPath )	||
+				fs.existsSync( pageLoopPath )		||
+				fs.existsSync( scrapePath )			||
+				fs.existsSync( testDirPath )		||
+				fs.existsSync( licenseFilePath )	||
+				fs.existsSync( readmeFilePath )		||
+				fs.existsSync( gruntFilePath )		||
+				fs.existsSync( jshintFilePath )		||
+				fs.existsSync( gitignoreFilePath )
+			) {
+				throw new Error( "The dir contains dirs and/or files with names colliding with the default recipe template" );
+			}
 		}
-
-		var templateRecipePath = pathUtils.resolve( __dirname, "..", "assets", "recipe" );
 
 		commonUtils.copyDirContentSync( templateRecipePath, path );
 	},
 
 	loadRecipe: function(path) {
 		var self = this,
-			dontLoadFiles = true;
+			settingsData = self._loadSettings( path ),
+			isCompiled = false;
 
-		return self._loadRecipe( path, CONST.PAGE_LOOP_FILENAME, CONST.SCRAPE_FILENAME, dontLoadFiles );
+		return self._loadRecipe(
+			path,
+			settingsData.settingsFile,
+			settingsData.settings,
+			isCompiled
+		);
 	},
 
 	loadCompiledRecipe: function(path) {
-		var self = this;
+		var self = this,
+			settingsData = self._loadSettings( path ),
+			isCompiled = true;
 
-		return self._loadRecipe( path, CONST.PAGE_LOOP_FILENAME_COMPILED, CONST.SCRAPE_FILENAME_COMPILED );
+		return self._loadRecipe(
+			path,
+			settingsData.settingsFile,
+			settingsData.settings,
+			isCompiled
+		);
 	},
 
-	_loadRecipe: function( path, pageLoopFileName, scrapeFileName, dontLoadFiles ) {
+	_loadSettings: function(path) {
 		var self = this,
+			packageJsonPath = pathUtils.join( path, CONST.SETTINGS_FILENAME );
+
+		if ( !fs.existsSync( packageJsonPath ) ) {
+			throw new Error( CONST.SETTINGS_FILENAME + " is missing!" );
+		}
+		if ( !fs.statSync( packageJsonPath ).isFile() ) {
+			throw new Error( packageJsonPath + " exists, but it's not a file!" );
+		}
+
+		var settingsFile = fs.readFileSync( packageJsonPath, "utf-8" ),
+			settings;
+		try {
+			settings = JSON.parse( settingsFile );
+		} catch(err) {}
+		self.areSettingsValid( settings );
+
+		return {
+			settingsFile: settingsFile,
+			settings: settings
+		};
+	},
+
+	_loadRecipe: function( path, settingsFile, settings, isCompiled ) {
+		var isNative = settings.pagehop.recipeType && settings.pagehop.recipeType === "native",
+			nativeRecipeFileName = CONST.NATIVE_RECIPE_FILENAME,
+			pageLoopFileName = isCompiled ? CONST.PAGE_LOOP_FILENAME_COMPILED : CONST.PAGE_LOOP_FILENAME,
+			scrapeFileName = isCompiled ? CONST.SCRAPE_FILENAME_COMPILED : CONST.SCRAPE_FILENAME,
 			result = {
 				id: null,
+				isNative: isNative,
 				description: null,
 				version: null,
 				homepage: null,
@@ -66,6 +124,7 @@ var recipeUtils = {
 				hasQuery: false,
 
 				dirPath:null,
+				nativeRecipePath:null,
 				pageLoopPath:null,
 				scrapePath: null,
 
@@ -74,52 +133,54 @@ var recipeUtils = {
 				scrapeFile: null
 			};
 
-		var packageJsonPath = pathUtils.join( path, CONST.SETTINGS_FILENAME ),
-			pageLoopPath = pathUtils.join( path, pageLoopFileName ),
-			scrapePath = pathUtils.join( path, scrapeFileName );
-
-		if ( !fs.existsSync( packageJsonPath ) ) {
-			throw new Error( CONST.SETTINGS_FILENAME + " is missing!" );
-		}
-		if ( !fs.existsSync( pageLoopPath ) ) {
-			throw new Error( CONST.PAGE_LOOP_FILENAME + " is missing!" );
-		}
-		if ( !fs.existsSync( scrapePath ) ) {
-			throw new Error( CONST.SCRAPE_FILENAME + " is missing! Even if you don't use it, the file is required." );
-		}
-
-		result.dirPath = path;
-		result.pageLoopPath = pageLoopPath;
-		result.scrapePath = scrapePath;
-
-		if ( !fs.statSync( packageJsonPath ).isFile() ) {
-			throw new Error( packageJsonPath + " exists, but it's not a file!" );
-		}
-		if ( !fs.statSync( pageLoopPath ).isFile() ) {
-			throw new Error( pageLoopPath + " exists, but it's not a file!" );
-		}
-		if ( !fs.statSync( scrapePath ).isFile() ) {
-			throw new Error( scrapePath + " exists, but it's not a file!" );
-		}
-
-		var packageJson = fs.readFileSync( packageJsonPath, "utf-8" ),
-			settings;
-		result.settingsFile = packageJson;
-		try {
-			settings = JSON.parse( packageJson );
-		} catch(err) {}
-		self.areSettingsValid( settings );
-
+		result.settingsFile = settingsFile;
 		result.id = settings.pagehop.id;
+		result.isNative = isNative;
 		result.description = settings.description;
 		result.version = settings.version;
 		result.homepage = settings.homepage;
 		result.options = settings.pagehop.options;
 		result.hasQuery = settings.pagehop.hasQuery;
 
-		if ( !dontLoadFiles ) {
-			result.pageLoopFile = fs.readFileSync( pageLoopPath, "utf-8" );
-			result.scrapeFile = fs.readFileSync( scrapePath, "utf-8" );
+		var nativeRecipePath = pathUtils.join( path, isCompiled ? "src" : "", nativeRecipeFileName ),
+			pageLoopPath = pathUtils.join( path, pageLoopFileName ),
+			scrapePath = pathUtils.join( path, scrapeFileName );
+
+		result.dirPath = path;
+
+		if ( isNative ) {
+			if ( !fs.existsSync( nativeRecipePath ) ) {
+				throw new Error( CONST.NATIVE_RECIPE_FILENAME + " is missing!" );
+			}
+
+			result.nativeRecipePath = nativeRecipePath;
+
+			if ( !fs.statSync( nativeRecipePath ).isFile() ) {
+				throw new Error( nativeRecipePath + " exists, but it's not a file!" );
+			}
+		} else {
+			if ( !fs.existsSync( pageLoopPath ) ) {
+				throw new Error( CONST.PAGE_LOOP_FILENAME + " is missing!" );
+			}
+			if ( !fs.existsSync( scrapePath ) ) {
+				throw new Error( CONST.SCRAPE_FILENAME + " is missing! Even if you don't use it, the file is required." );
+			}
+
+			result.dirPath = path;
+			result.pageLoopPath = pageLoopPath;
+			result.scrapePath = scrapePath;
+
+			if ( !fs.statSync( pageLoopPath ).isFile() ) {
+				throw new Error( pageLoopPath + " exists, but it's not a file!" );
+			}
+			if ( !fs.statSync( scrapePath ).isFile() ) {
+				throw new Error( scrapePath + " exists, but it's not a file!" );
+			}
+
+			if ( isCompiled ) {
+				result.pageLoopFile = fs.readFileSync( pageLoopPath, "utf-8" );
+				result.scrapeFile = fs.readFileSync( scrapePath, "utf-8" );
+			}
 		}
 
 		return result;
@@ -149,6 +210,9 @@ var recipeUtils = {
 		}
 		if( !self.isValidMandatoryString( settings.pagehop.id ) ) {
 			throw new Error( errorMessageTemplate + "pagehop.id property is missing or not a string!" );
+		}
+		if( !self.isValidOptionalString( settings.pagehop.recipeType ) ) {
+			throw new Error( errorMessageTemplate + "pagehop.recipeType property should be a string!" );
 		}
 		if ( !self.isValidMandatoryBool( settings.pagehop.hasQuery ) ) {
 			throw new Error( errorMessageTemplate + "pagehop.hasQuery property is missing or not a bool!" );
@@ -185,8 +249,18 @@ var recipeUtils = {
 		}
 	},
 
+	isValidString: function(value) {
+		return typeof value === "string";
+	},
+
+	isValidOptionalString: function(value) {
+		var self = this;
+		return ( value && self.isValidString( value ) ) || !value;
+	},
+
 	isValidMandatoryString: function(value) {
-		return value && typeof value === "string";
+		var self = this;
+		return value && self.isValidString( value );
 	},
 
 	isValidMandatoryBool: function(value) {
@@ -207,6 +281,11 @@ var recipeUtils = {
 			name: CONST.SETTINGS_FILENAME,
 			data: recipe.settingsFile
 		} );
+
+		if ( recipe.isNative ) {
+			return callback();
+		}
+
 // how is the state of browserify flushed???
 ( function(){
 		var b = browserify();

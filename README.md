@@ -47,6 +47,7 @@ Usage: node cli.js recipe [options]
 
 Options:
    -i, --init       scaffold a recipe project (in the current dir, if no path is passed)
+   -n, --native     scaffold a NATIVE recipe project (in the current dir, if no path is passed), use with -i
    -v, --validate   validates the structure of a recipe (validates current dir's content, if no path is passed)
    -p, --path       path to the recipe's dir (if not passed - path is considered the current dir)
 ```
@@ -73,9 +74,27 @@ $ pagehop recipe -i -p /Users/tsenkov/pagehop-my-great-recipe/
 
 The same goes for initialising a new tool project (just replace "recipe" with "tool").
 
+##### Init (Scaffold) Native Recipe
+
+```bash
+$ pagehop recipe --init --native
+```
+
+or
+
+```bash
+$ pagehop recipe -i -n
+```
+
+You can (optionally) specify a path:
+
+```bash
+$ pagehop recipe -i -n -p /Users/tsenkov/pagehop-my-great-native-recipe/
+```
+
 #### Validate
 
-To validate the structure of your recipe:
+To validate the structure of your recipe (no matter if regular or native recipe):
 
 ```bash
 $ pagehop recipe --validate
@@ -96,6 +115,8 @@ $ pagehop recipe -v -p /Users/tsenkov/pagehop-my-great-recipe/
 The same approach for tools (just replace "recipe" with "tool").
 
 ### In tests
+
+**Note on Native Recipes:** Native recipes are actual node.js packages and don't need any special boilerplate for testing.
 
 Here is an overview example:
 
@@ -420,7 +441,7 @@ it( "should set items to empty array if no results", function(done){
 
 ### Recipes
 
-Every recipe consist of:
+Every recipe (except native) consist of:
 - page-loop.js;
 - scrape.js;
 - package.json.
@@ -442,7 +463,7 @@ Lets go through the params:
 - **options** - **array**, holding all options parsed from the pagehop query.
 - **max** - integer, >=10, the maximal number of results that can be returned by the recipe.
 - **scrapeScript** - **string**, Pagehop executes recipes producing a single script which is the page-loop.js with all of it's dependencies and the scrape script (if any), which is executed in a separate isolated environment upon calling pagehop.scrape() from your page-loop. Since you only should use pagehop.init() in tests, and since these tests should only test the page-loop.js, **never** the scrape.js (it's separately tested), you don't need to pass actual script in here, because it shouldn't get executed.
-- **systemMeta** - **object** with 2 fields (arrays) - **recipes**, **tools**. This is usually used by recipes that provide some system information about Pagehop (AllRecipes list the available recipes and AllTools list the tools).
+- **systemMeta** - **object** with 2 fields (arrays) - **recipes**, **tools**. This is usually used by recipes that provide some system information about Pagehop ("sys :r" list the available recipes and "sys :t" list the tools).
 - **hops** - **MUTABLE array** of objects specifying addresses the user had "hopped of". Here is the format of the hop objects:
 
 ```javascript
@@ -615,6 +636,160 @@ When your scrape is ready, you can return the results it has obtained with pageh
 
 Result's format is entirely under your control (pagehop.finish( results ) in the page-loop.js should follow a scheme, though. Make sure to check that out).
 
+### Native Recipes
+
+Every recipe consist (at least) of:
+- recipe.js;
+- package.json.
+
+Native recipes are not running in an isolated environment - they have access to your file system, for example. They are regular Node.js scripts. This is different from regular recipes, which run in an isolated headless browser environment.
+
+The API is almost the same to the regular page-loop.
+
+#### pagehop API (recipe.js)
+
+Unlike regular recipes, native recipes need to export a `run` method. They get access to the `pagehop` object in the same mehtod:
+
+```javascript
+exports.run = function( pagehop ) {
+
+	var options = pagehop.getOptions() || [],
+		isLocal = ":loc",
+		itemText = options.indexOf( isLocal ) === -1 ?
+			"It's global search." :
+			"It's local search.",
+		results = [];
+
+	//...
+
+	pagehop.finish( results );
+
+};
+```
+
+##### new PagehopApi(query, options, max, systemMeta, hops)
+
+Constructor.
+
+- **query** - **string**, recipe's query as parsed by Pagehop.
+- **options** - **array**, holding all options parsed from the pagehop query.
+- **max** - integer, >=10, the maximal number of results that can be returned by the recipe.
+- **systemMeta** - **object** with 2 fields (arrays) - **recipes**, **tools**. This is usually used by recipes that provide some system information about Pagehop (`sys :r` list the available recipes and "sys :t" list the tools).
+- **hops** - **MUTABLE array** of objects specifying addresses the user had "hopped of". Here is the format of the hop objects:
+
+```javascript
+{
+	text: "text",
+	address: "address"
+}
+```
+
+Emits events:
+
+- **"finish"** with args object:
+
+```javascript
+{
+	items: results,
+	hops: hops
+}
+```
+
+- **"error"** with error object.
+
+##### pagehop.max property
+
+**integer**. Your pageLoop scripts should get this, in order to find out the limit of the number of returned results they should confirm to.
+
+##### pagehop.query property
+
+**string**. The recipe query as parsed by Pagehop.
+
+This doesn't include the whole pagehop query - e.g. in `g <this is the query> :r $.*^` the parsed query will be `<this is the query>`.
+
+##### pagehop.options property
+
+An **array** of strings.
+
+Tools or non-recognized options will not be passed in here - e.g. `h :s :asdf` will produce only [":s"] for options (":s" is for Show HN posts with HackerNews recipe).
+
+##### pagehop.systemMeta property
+
+**object** with 2 fields (arrays) - **recipes**, **tools**. Recipe objects look like this (comments show where does the data come from):
+
+```javascript
+{
+	id: /* package.json:pagehop.id */,
+	description: /* package.json:description */,
+	version: /* package.json:version */,
+	homepage: /* package.json:homepage */,
+	options: /* package.json:pagehop.options */
+} 
+```
+
+Tool objects look like this:
+
+```javascript
+{
+	id: /* package.json:pagehop.id */,
+	description: /* package.json:description */,
+	version: /* package.json:version */,
+	homepage: /* package.json:homepage */,
+	keyword: /* package.json:pagehop.keyword */
+} 
+```
+
+##### pagehop.hops property
+
+**MUTABLE array** of objects specifying addresses the user had "hopped of". Recipes are usually using the hops array for a visual notification of which recipe is being used. Here is how you should use the hops array and how the objects in it look like:
+
+```javascript
+pagehop.getHops().push( {
+	text: "RecipeId",
+	address: "http://some.url.com/will/produce/same/results/but/in-browser"
+} );
+```
+
+##### pagehop.finishWithError( error ) method
+
+If your recipe is prevented by an obstacle that it cannot overcome you can fail gracefully with pagehop.finishWithError().
+
+Error object must be with this structure:
+
+```javascript
+{
+	type: /* string */,
+	message: /* string */
+}
+```
+
+##### pagehop.finish( results ) method
+
+- **results** - **array** of result objects.
+
+When your recipe is ready, you can return the results it has obtained/produced with pagehop.finish( results ).
+
+Here is how your result objects should look like:
+
+```javascript
+{
+	text: /* required, string */,
+	address: /* string, url */,
+	displayText: /* string that can contain html formatting */,
+	displayAddress: /* string that can contain html formatting */,
+	tooltip: /* string */,
+	preview: /* string (html) */
+}
+```
+
+If you provide, both, text and displayText, displayText will be shown as the first row of your Pagehop result, but text will still be the field used for searches (:r will not use the displayText to match against and the produced results will have their displayText fields redone with the formatting highlighting the matched parts). If only text is present, then it will be displayed on the first row.
+
+If you provide, both, address and displayAddress, only displayAddress will be shown, on the second row.
+
+By default, address is show in a tooltip on long-hover on items in the UI. You can pass a different tooltip text to replace it.
+
+Starting from Pagehop1.2, you can optionally supply a preview html to be loaded in Pagehop's UI. Recipes such as DefineWord, CodeSearch and others use it. Local resources you reffer from this html should assume the recipe's root dir as / (web root).
+
 ### Tools
 
 Every tool consist of:
@@ -782,6 +957,8 @@ Although ECMAScript 6 style of requiring dependencies (import & export keywords)
 
 ## Release History
 
+ - 1.2.0
+   - Add: native (Node.js) recipes;
  - 1.1.5
    - Fix: assets: recipe&tool: jshint fails on ES6 code;
  - 1.1.4

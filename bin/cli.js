@@ -20,6 +20,11 @@ optionParser.command( "recipe" )
 		abbr: "i",
 		help: "scaffold a recipe project (in the current dir, if no path is passed)"
 	} )
+	.option( "native", {
+		flag: true,
+		abbr: "n",
+		help: "scaffold a NATIVE recipe project (in the current dir, if no path is passed), use with -i"
+	} )
 	.option( "validate", {
 		flag: true,
 		abbr: "v",
@@ -72,7 +77,7 @@ function execCommand(opts, scaffoldLambda, validateLambda) {
 	var path = pathUtils.resolve( process.cwd(), ( opts.path ) ? opts.path : "." );
 
 	if ( opts.init ) {
-		execInTryCatch( function() { scaffoldLambda( path ); }, "Init Error", "Successfull init!" );
+		execInTryCatch( function() { scaffoldLambda( path, opts.native ); }, "Init Error", "Successfull init!" );
 	} else if ( opts.validate ) {
 		execInTryCatch( function() { validateLambda( path ); }, "Validation Error", "Valid!" );
 	} else {

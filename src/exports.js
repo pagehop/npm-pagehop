@@ -3,6 +3,7 @@
 var fs = require('fs'),
 	pathUtils = require('path');
 
+exports.recipeApi = fs.readFileSync( pathUtils.resolve( __dirname, "api", "recipe.js" ), "utf-8" );
 exports.pageLoopApi = fs.readFileSync( pathUtils.resolve( __dirname, "api", "page-loop.js" ), "utf-8" );
 exports.scrapeApi = fs.readFileSync( pathUtils.resolve( __dirname, "api", "scrape.js" ), "utf-8" );
 exports.toolApi = fs.readFileSync( pathUtils.resolve( __dirname, "api", "tool.js" ), "utf-8" );

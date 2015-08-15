@@ -8,6 +8,7 @@ var CONST = {
 	PAGE_LOOP_FILENAME_COMPILED:	"page-loop-compiled.js",
 	SCRAPE_FILENAME_COMPILED:		"scrape-compiled.js",
 	TOOL_FILENAME_COMPILED:			"tool-compiled.js",
+	NATIVE_RECIPE_FILENAME:			"recipe.js",
 	PAGE_LOOP_FILENAME:				"page-loop.js",
 	SCRAPE_FILENAME:				"scrape.js",
 	TOOL_FILENAME:					"tool.js",
