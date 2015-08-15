@@ -1,6 +1,6 @@
 {
   "name": "pagehop",
-  "version": "1.1.5",
+  "version": "1.2.1",
   "dependencies": {
     "babelify": {
       "version": "5.0.4",
