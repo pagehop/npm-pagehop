@@ -1,7 +1,7 @@
 {
   "name": "pagehop",
   "description": "CLI tool and a testing framework for building recipes and tools for the Pagehop app.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "author": {
     "name": "nicroto",
     "email": "nikolay@tsenkov.net",
