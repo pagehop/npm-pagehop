@@ -1023,6 +1023,19 @@ describe( "recipeUtils", function() {
 			recipe.pageLoopPath.should.equal( pathUtils.normalize( "test/page-loop-compiled.js" ) );
 			recipe.scrapePath.should.equal( pathUtils.normalize( "test/scrape-compiled.js" ) );
 		} );
+		it( "should update correctly nativeRecipePath if recipe is native", function() {
+			var recipe = {
+				isNative: true,
+				dirPath: null,
+				pageLoopPath: null,
+				scrapePath: null
+			};
+			recipeUtils.updatePaths( recipe, "test" );
+
+			recipe.dirPath.should.equal( pathUtils.normalize( "test" ) );
+
+			recipe.nativeRecipePath.should.equal( pathUtils.normalize( "test/src/recipe.js" ) );
+		} );
 	} );
 	after( function(done) {
 		test.finalize( done );

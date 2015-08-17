@@ -957,6 +957,8 @@ Although ECMAScript 6 style of requiring dependencies (import & export keywords)
 
 ## Release History
 
+ - 1.2.2
+   - Fix: native recipes don't get their path updated.
  - 1.2.1
    - Fix: native-recipe default scaffold produces error on test run.
  - 1.2.0

@@ -327,8 +327,12 @@ var recipeUtils = {
 
 	updatePaths: function( recipe, newPath ) {
 		recipe.dirPath = newPath;
-		recipe.pageLoopPath = pathUtils.join( newPath, CONST.PAGE_LOOP_FILENAME_COMPILED );
-		recipe.scrapePath = pathUtils.join( newPath, CONST.SCRAPE_FILENAME_COMPILED );
+		if ( recipe.isNative ) {
+			recipe.nativeRecipePath = pathUtils.join( newPath, "src", CONST.NATIVE_RECIPE_FILENAME );
+		} else {
+			recipe.pageLoopPath = pathUtils.join( newPath, CONST.PAGE_LOOP_FILENAME_COMPILED );
+			recipe.scrapePath = pathUtils.join( newPath, CONST.SCRAPE_FILENAME_COMPILED );
+		}
 	}
 
 };
